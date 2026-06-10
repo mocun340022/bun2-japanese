@@ -1868,7 +1868,11 @@ function autoUpload() {
   saveData();
   
   var cleanData = JSON.parse(JSON.stringify(appData));
-  if (cleanData.settings) cleanData.settings.syncToken = '';
+  if (cleanData.settings) {
+    cleanData.settings.syncToken = '';
+    cleanData.settings.gistToken = '';
+    cleanData.settings.gistId = '';
+  }
   var content = JSON.stringify(cleanData, null, 2);
   fetch(SYNC_API, {
     method: 'PUT',
@@ -1887,9 +1891,13 @@ function syncUpload() {
   if (!token) { syncStatus('请先填写 GitHub Token', false); return; }
   
   syncStatus('⬆️ 上传中…');
-  // 上传前删除 Token，避免 GitHub 安全拦截
+  // 上传前删除所有 Token，避免 GitHub 安全拦截
   var cleanData = JSON.parse(JSON.stringify(appData));
-  if (cleanData.settings) cleanData.settings.syncToken = '';
+  if (cleanData.settings) {
+    cleanData.settings.syncToken = '';
+    cleanData.settings.gistToken = '';
+    cleanData.settings.gistId = '';
+  }
   var content = JSON.stringify(cleanData, null, 2);
   
   // 先获取当前 SHA（如果文件已存在）
