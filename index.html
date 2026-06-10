@@ -1940,7 +1940,10 @@ function syncDownload() {
   .then(function(text) {
     var remote = JSON.parse(text);
     if (!confirm('云端数据将覆盖本机数据，确定下载？')) { syncStatus('已取消', false); return; }
+    // 保留本机 Token（下载的数据里 Token 是空的）
+    var localToken = getSyncToken();
     appData = remote;
+    if (localToken && appData.settings) appData.settings.syncToken = localToken;
     appData.lastSync = new Date().toISOString();
     saveData();
     syncStatus('✅ 下载成功！', true);
