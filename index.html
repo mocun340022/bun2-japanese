@@ -2095,12 +2095,25 @@ function renderChart() {
 // ═══════ UTILS: TTS, 快捷键, 撒花, 暗色模式 ═══════
 function speakWord(text) {
   try {
-    if (!window.speechSynthesis) return;
+    if (!window.speechSynthesis) { showSpeakFail(); return; }
     var u = new SpeechSynthesisUtterance(text);
     u.lang = 'ja-JP'; u.rate = 0.85; u.pitch = 1;
+    u.onerror = function() { showSpeakFail(); };
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(u);
-  } catch(e) {}
+  } catch(e) { showSpeakFail(); }
+}
+
+var _speakFailShown = false;
+function showSpeakFail() {
+  if (_speakFailShown) return;
+  _speakFailShown = true;
+  var div = document.createElement('div');
+  div.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1a1a2e;color:#f5f0e8;padding:10px 20px;border-radius:20px;font-size:12px;z-index:999;box-shadow:0 4px 20px rgba(0,0,0,.3)';
+  div.textContent = '🔇 语音不可用 · 请查看单词读音（上方假名）';
+  document.body.appendChild(div);
+  setTimeout(function() { div.style.opacity = '0'; div.style.transition = 'opacity .5s'; }, 3000);
+  setTimeout(function() { div.remove(); }, 3500);
 }
 
 // 键盘快捷键
