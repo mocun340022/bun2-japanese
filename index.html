@@ -1,0 +1,2120 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>不二日本語 — B2B 商务日语</title>
+<meta name="description" content="B2B商务日语学习工具 · 间隔重复 · 闪卡 · 商务邮件">
+<meta name="theme-color" content="#1a1a2e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="不二日本語">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
+<script>
+tailwind.config={theme:{extend:{fontFamily:{serif:['"Noto Serif JP"','serif'],sans:['"Noto Sans JP"','sans-serif']},colors:{sumi:'#1a1a2e',kin:'#c9a96e',washi:'#f5f0e8',ake:'#c24641',midori:'#4a7c59',hai:'#8b8682'}}}}
+</script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Noto Sans JP',sans-serif;background:#f5f0e8;color:#1a1a2e;min-height:100vh}
+.tab-btn{transition:all .2s}
+.tab-btn.active{background:#1a1a2e;color:#f5f0e8}
+.level-filter.active{background:#1a1a2e!important;color:#f5f0e8!important;border-color:#1a1a2e!important}
+.tab-btn:not(.active):hover{background:rgba(26,26,46,.08)}
+.tab-content{display:none}
+.tab-content.active{display:block}
+.quiz-option{transition:all .2s}
+.quiz-option:hover:not(.correct):not(.wrong){transform:translateY(-1px);box-shadow:0 2px 12px rgba(26,26,46,.08)}
+.quiz-option.correct{background:#4a7c59!important;color:#fff!important;border-color:#4a7c59!important;animation:pulse .3s}
+.quiz-option.wrong{background:#c24641!important;color:#fff!important;border-color:#c24641!important;animation:shake .4s}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.03)}}
+@keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-4px)}40%{transform:translateX(4px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+@keyframes fadeInUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.animate-in{animation:fadeInUp .35s ease forwards}
+.streak-fire{animation:flicker 1.5s ease-in-out infinite;display:inline-block}
+@keyframes flicker{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.85;transform:scale(1.08)}}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);display:flex;align-items:center;justify-content:center;z-index:50;animation:fadeIn .2s}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}
+</style>
+</head>
+<body class="font-sans">
+
+<!-- ═══════ HEADER ═══════ -->
+<header class="bg-sumi text-washi px-6 py-3.5 flex items-center justify-between shadow-lg sticky top-0 z-40">
+  <div class="flex items-center gap-3">
+    <h1 class="text-xl font-serif font-bold"><span class="text-kin">不二</span>日本語</h1>
+    <span class="text-xs bg-washi/10 px-2 py-0.5 rounded-full border border-kin/30 text-kin">v2</span>
+  </div>
+  <div class="flex items-center gap-5 text-sm">
+    <span id="hdr-day">Day <b class="text-kin" id="hdr-day-num">1</b></span>
+    <span class="streak-fire text-lg">🔥</span><span class="font-bold text-kin" id="hdr-streak">0</span><span class="text-hai text-xs">天连续</span>
+    <button onclick="toggleDark()" class="text-xs px-2 py-1 rounded-full border border-kin/30 text-kin hover:bg-kin/10 transition" title="暗色模式">🌙</button>
+  </div>
+</header>
+
+<!-- ═══════ TABS ═══════ -->
+<nav class="bg-white border-b border-kin/10 px-6 flex gap-1 sticky top-[57px] z-30">
+  <button class="tab-btn active px-5 py-3 text-sm font-medium rounded-t-lg" data-tab="learn">📖 今日学习</button>
+  <button class="tab-btn px-5 py-3 text-sm font-medium rounded-t-lg" data-tab="vocab">📚 词库</button>
+  <button class="tab-btn px-5 py-3 text-sm font-medium rounded-t-lg" data-tab="grammar">📝 语法库</button>
+  <button class="tab-btn px-5 py-3 text-sm font-medium rounded-t-lg" data-tab="reading">📰 阅读</button>
+  <button class="tab-btn px-5 py-3 text-sm font-medium rounded-t-lg" data-tab="settings">⚙ 设置</button>
+</nav>
+
+<main class="max-w-7xl mx-auto px-4 py-5">
+
+<!-- ═══════════ TAB 1: 今日学习 ═══════════ -->
+<section class="tab-content active" id="tab-learn">
+  <!-- 今日简报横幅 -->
+  <div class="bg-sumi text-washi rounded-xl p-4 mb-4 flex items-center justify-between shadow-md" id="daily-banner">
+    <div class="flex items-center gap-3">
+      <span class="text-2xl">📖</span>
+      <div>
+        <p class="text-sm font-medium" id="banner-msg">今日有 <b class="text-kin" id="banner-due">0</b> 个单词待复习</p>
+        <p class="text-xs text-washi/60" id="banner-sub">打开学习记录查看详情</p>
+      </div>
+    </div>
+    <button onclick="startQuiz()" class="px-4 py-1.5 bg-kin text-sumi rounded-lg text-sm font-bold hover:bg-kin/80 transition">开始做题</button>
+  </div>
+  <!-- 快速选书栏 -->
+  <div class="flex flex-wrap gap-1.5 mb-4" id="quick-book-select"></div>
+  <div class="grid grid-cols-12 gap-5">
+    
+    <!-- 左侧: 队列 -->
+    <div class="col-span-3 space-y-3">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xs uppercase tracking-widest text-hai">📋 今日队列</h2>
+        <button onclick="startQuiz()" class="text-xs bg-sumi text-washi px-3 py-1.5 rounded-lg hover:bg-sumi/90 transition font-medium" id="btn-start">开始做题</button>
+        <button onclick="exitQuiz()" class="text-xs border border-ake/30 text-ake px-3 py-1.5 rounded-lg hover:bg-ake/5 transition font-medium hidden" id="btn-exit">退出学习</button>
+      </div>
+      <div class="bg-white rounded-xl border border-kin/10 p-4">
+        <div class="flex justify-between text-sm mb-3">
+          <span>待复习</span><span class="font-bold text-ake" id="q-review-count">0</span>
+        </div>
+        <div class="flex justify-between text-sm mb-3">
+          <span>新词</span><span class="font-bold text-midori" id="q-new-count">0</span>
+        </div>
+        <div class="flex justify-between text-sm mb-3">
+          <span>总计</span><span class="font-bold text-sumi" id="q-total-count">0</span>
+        </div>
+        <div class="w-full h-px bg-kin/10 my-3"></div>
+        <p class="text-xs text-hai" id="q-source-info">点击"开始做题"生成今日队列</p>
+      </div>
+      
+      <!-- 做题统计 -->
+      <div class="bg-white rounded-xl border border-kin/10 p-4" id="quiz-stats" style="display:none">
+        <h3 class="text-xs text-hai uppercase tracking-widest mb-2">📊 本轮统计</h3>
+        <div class="grid grid-cols-2 gap-2 text-center">
+          <div><p class="text-xl font-bold text-midori" id="stat-correct">0</p><p class="text-xs text-hai">正确</p></div>
+          <div><p class="text-xl font-bold text-ake" id="stat-wrong">0</p><p class="text-xs text-hai">错误</p></div>
+        </div>
+        <div class="w-full bg-sumi/5 h-1.5 rounded-full mt-2 overflow-hidden">
+          <div class="h-full bg-midori rounded-full transition-all" id="stat-bar" style="width:0%"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 中间: 做题区 -->
+    <div class="col-span-6">
+      <div class="bg-white rounded-2xl shadow-md border border-kin/10 overflow-hidden min-h-[400px] flex flex-col items-center justify-center" id="quiz-area">
+        <div class="text-center p-10" id="quiz-placeholder">
+          <p class="text-5xl mb-4">📖</p>
+          <p class="text-lg font-serif font-bold text-sumi mb-2">准备开始学习</p>
+          <p class="text-sm text-hai">点击左侧「开始做题」生成今日学习队列</p>
+          <p class="text-xs text-hai mt-4">基于 SM-2 间隔重复算法 + 交错学习策略</p>
+        </div>
+        
+        <!-- 题目区（动态填充） -->
+        <div class="w-full p-8" id="quiz-content" style="display:none">
+          <div class="flex items-center justify-between mb-4">
+            <span class="text-xs text-hai" id="q-progress">第 1/20 题</span>
+            <span class="text-xs px-2 py-0.5 rounded-full bg-sumi/5" id="q-mode-badge">日→中</span>
+          </div>
+          <p class="text-4xl font-serif font-bold text-center my-8" id="q-question">見積書</p>
+          <div class="grid grid-cols-2 gap-3" id="q-options"></div>
+          <div class="mt-6 text-center" id="q-feedback" style="display:none">
+            <p class="text-sm font-medium" id="q-fb-text"></p>
+            <p class="text-xs text-hai mt-1 italic" id="q-fb-example"></p>
+            <p class="text-xs text-kin mt-0.5" id="q-fb-note" style="display:none"></p>
+          </div>
+          <button class="mt-6 mx-auto block px-6 py-2 bg-sumi text-washi rounded-lg text-sm hover:bg-sumi/90 transition hidden" id="q-next-btn" onclick="nextQuestion()">下一题 →</button>
+        </div>
+        
+        <!-- 完成 -->
+        <div class="text-center p-10" id="quiz-done" style="display:none">
+          <p class="text-5xl mb-3">🎉</p>
+          <p class="text-xl font-serif font-bold mb-2">お疲れ様でした！</p>
+          <p class="text-sm text-hai mb-1" id="done-msg"></p>
+          <p class="text-xs text-hai" id="done-detail"></p>
+          <button class="mt-4 px-5 py-2 bg-sumi text-washi rounded-lg text-sm hover:bg-sumi/90 transition" onclick="resetQuiz()">再来一轮</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 右侧: 进度 -->
+    <div class="col-span-3 space-y-3">
+      <h2 class="text-xs uppercase tracking-widest text-hai">📈 学习统计</h2>
+      <div class="bg-white rounded-xl border border-kin/10 p-4">
+        <canvas id="progressChart" height="160"></canvas>
+      </div>
+      <div class="grid grid-cols-2 gap-2">
+        <div class="bg-white rounded-xl p-3 text-center border border-kin/10"><p class="text-xl font-bold text-sumi" id="stat-total-words">0</p><p class="text-xs text-hai">总词汇</p></div>
+        <div class="bg-white rounded-xl p-3 text-center border border-kin/10"><p class="text-xl font-bold text-midori" id="stat-mastered">0</p><p class="text-xs text-hai">已掌握</p></div>
+        <div class="bg-white rounded-xl p-3 text-center border border-kin/10"><p class="text-xl font-bold text-kin" id="stat-today-reviews">0</p><p class="text-xs text-hai">今日复习</p></div>
+        <div class="bg-white rounded-xl p-3 text-center border border-kin/10"><p class="text-xl font-bold text-ake" id="stat-accuracy">-</p><p class="text-xs text-hai">正确率</p></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 学习记录面板 -->
+  <div class="mt-6 bg-white rounded-2xl shadow-md border border-kin/10 overflow-hidden">
+    <div class="px-5 py-3 bg-sumi/3 border-b border-kin/10 flex items-center justify-between cursor-pointer" onclick="var p=document.getElementById('records-body');p.style.display=p.style.display==='none'?'block':'none'">
+      <span class="text-sm font-medium">📊 学习记录</span>
+      <span class="text-xs text-hai" id="records-toggle">▼ 展开</span>
+    </div>
+    <div class="p-5" id="records-body">
+      <div class="grid grid-cols-2 gap-5">
+        <div>
+          <h4 class="text-xs uppercase tracking-widest text-ake font-medium mb-2">⚠ 待复习</h4>
+          <div id="records-due" class="space-y-1.5 text-sm"></div>
+        </div>
+        <div>
+          <h4 class="text-xs uppercase tracking-widest text-kin font-medium mb-2">📉 薄弱词汇（正确率 < 50%）</h4>
+          <div id="records-weak" class="space-y-1.5 text-sm"></div>
+        </div>
+      </div>
+      <div class="mt-4 pt-4 border-t border-kin/10">
+        <h4 class="text-xs uppercase tracking-widest text-hai font-medium mb-2">📈 每日统计</h4>
+        <div id="records-daily" class="text-sm text-hai"></div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 弱点分析面板 -->
+  <div class="mt-6 bg-white rounded-2xl shadow-md border border-kin/10 overflow-hidden">
+    <div class="px-5 py-3 bg-ake/5 border-b border-kin/10 flex items-center justify-between cursor-pointer" onclick="var p=document.getElementById('weakness-body');p.style.display=p.style.display==='none'?'block':'none'">
+      <span class="text-sm font-medium">🎯 弱点分析</span>
+      <span class="text-xs text-hai" id="weakness-toggle">▼ 展开</span>
+    </div>
+    <div class="p-5" id="weakness-body">
+      <div id="weakness-summary" class="text-sm mb-4"></div>
+      <div class="grid grid-cols-2 gap-5">
+        <div>
+          <h4 class="text-xs uppercase tracking-widest text-ake font-medium mb-2">📊 各题型正确率</h4>
+          <div id="weakness-mode" class="space-y-1 text-sm"></div>
+        </div>
+        <div>
+          <h4 class="text-xs uppercase tracking-widest text-kin font-medium mb-2">📈 各等级正确率</h4>
+          <div id="weakness-level" class="space-y-1 text-sm"></div>
+        </div>
+      </div>
+      <div class="mt-4 pt-4 border-t border-kin/10">
+        <h4 class="text-xs uppercase tracking-widest text-ake font-medium mb-2">🔴 高频错词 TOP 5</h4>
+        <div id="weakness-topwords" class="space-y-1 text-sm"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TAB 2: 词库 ═══════════ -->
+<section class="tab-content" id="tab-vocab">
+  <div class="flex gap-5" style="height:calc(100vh - 180px)">
+    <!-- 单词书列表 -->
+    <div class="w-56 flex-shrink-0 space-y-2">
+      <div class="flex items-center justify-between mb-2">
+        <h2 class="text-xs uppercase tracking-widest text-hai">📚 单词书</h2>
+        <button onclick="addVocabBook()" class="text-lg text-kin hover:text-sumi transition" title="新建单词书">＋</button>
+      </div>
+      <div id="vocab-book-list" class="space-y-1"></div>
+    </div>
+    <!-- 单词表 -->
+    <div class="flex-1 bg-white rounded-xl border border-kin/10 overflow-hidden flex flex-col">
+      <div class="px-4 py-3 bg-sumi/3 border-b border-kin/10 flex items-center justify-between">
+        <span class="text-sm font-medium" id="vocab-book-title">选择一本单词书</span>
+        <div class="flex gap-2">
+          <button onclick="importCSV('vocab')" class="text-xs px-2.5 py-1 rounded-lg border border-kin/20 hover:bg-kin/5 transition">导入CSV</button>
+          <button onclick="exportCSV('vocab')" class="text-xs px-2.5 py-1 rounded-lg border border-kin/20 hover:bg-kin/5 transition">导出CSV</button>
+          <button onclick="addWord()" class="text-xs px-2.5 py-1 rounded-lg bg-sumi text-washi hover:bg-sumi/90 transition">＋ 添加单词</button>
+        </div>
+      </div>
+      <div class="px-4 py-2 flex gap-2 items-center border-b border-kin/5">
+        <input id="vocab-search" class="flex-1 px-3 py-1.5 rounded-lg border border-kin/20 text-sm bg-washi/30" placeholder="🔍 搜索日语/读音/中文..." oninput="filterVocab()">
+        <button class="text-xs px-2 py-1 rounded-full border border-kin/20 hover:bg-kin/10 transition level-filter active" data-lv="all" onclick="filterVocabLevel('all',this)">全部</button>
+        <button class="text-xs px-2 py-1 rounded-full border border-kin/20 hover:bg-kin/10 transition level-filter" data-lv="N5" onclick="filterVocabLevel('N5',this)">N5</button>
+        <button class="text-xs px-2 py-1 rounded-full border border-kin/20 hover:bg-kin/10 transition level-filter" data-lv="N4" onclick="filterVocabLevel('N4',this)">N4</button>
+        <button class="text-xs px-2 py-1 rounded-full border border-kin/20 hover:bg-kin/10 transition level-filter" data-lv="N3" onclick="filterVocabLevel('N3',this)">N3</button>
+        <button class="text-xs px-2 py-1 rounded-full border border-kin/20 hover:bg-kin/10 transition level-filter" data-lv="N2" onclick="filterVocabLevel('N2',this)">N2</button>
+        <button class="text-xs px-2 py-1 rounded-full border border-kin/20 hover:bg-kin/10 transition level-filter" data-lv="N1" onclick="filterVocabLevel('N1',this)">N1</button>
+      </div>
+      <div class="flex-1 overflow-y-auto p-4">
+        <table class="w-full text-sm" id="vocab-table">
+          <thead><tr class="text-left text-xs text-hai border-b border-kin/10"><th class="pb-2 font-medium">日语</th><th class="pb-2 font-medium">读音</th><th class="pb-2 font-medium">中文</th><th class="pb-2 font-medium">等级</th><th class="pb-2 font-medium" id="th-book-name">所属书</th><th class="pb-2 font-medium">例句</th><th class="pb-2 font-medium w-16">操作</th></tr></thead>
+          <tbody id="vocab-tbody"></tbody>
+        </table>
+        <div id="vocab-pagination"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TAB 3: 语法库 ═══════════ -->
+<section class="tab-content" id="tab-grammar">
+  <div class="bg-white rounded-xl border border-kin/10 overflow-hidden flex flex-col" style="height:calc(100vh - 180px)">
+    <div class="px-4 py-3 bg-sumi/3 border-b border-kin/10 flex items-center justify-between">
+      <span class="text-sm font-medium">📝 语法点库</span>
+      <div class="flex gap-2">
+        <button onclick="importCSV('grammar')" class="text-xs px-2.5 py-1 rounded-lg border border-kin/20 hover:bg-kin/5 transition">导入CSV</button>
+        <button onclick="exportCSV('grammar')" class="text-xs px-2.5 py-1 rounded-lg border border-kin/20 hover:bg-kin/5 transition">导出CSV</button>
+        <button onclick="addGrammarPoint()" class="text-xs px-2.5 py-1 rounded-lg bg-sumi text-washi hover:bg-sumi/90 transition">＋ 添加语法点</button>
+      </div>
+    </div>
+    <div class="flex-1 overflow-y-auto p-4">
+      <table class="w-full text-sm">
+        <thead><tr class="text-left text-xs text-hai border-b border-kin/10"><th class="pb-2 font-medium">语法点</th><th class="pb-2 font-medium">含义</th><th class="pb-2 font-medium">级别</th><th class="pb-2 font-medium">例句</th><th class="pb-2 font-medium w-16">操作</th></tr></thead>
+        <tbody id="grammar-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TAB 4: 设置 ═══════════ -->
+<section class="tab-content" id="tab-settings">
+  <div class="max-w-lg mx-auto space-y-5">
+    <div class="bg-white rounded-xl border border-kin/10 p-5">
+      <h3 class="text-sm font-bold mb-3">📊 每日配额</h3>
+      <div class="space-y-3">
+        <div class="flex items-center justify-between"><span class="text-sm">每日新词数</span><input type="number" id="set-new-words" class="w-20 px-3 py-1.5 rounded-lg border border-kin/20 text-center text-sm" min="1" max="30" value="5"></div>
+        <div class="flex items-center justify-between"><span class="text-sm">每日复习上限</span><input type="number" id="set-review-max" class="w-20 px-3 py-1.5 rounded-lg border border-kin/20 text-center text-sm" min="1" max="50" value="20"></div>
+        <div class="flex items-center justify-between"><span class="text-sm">每日时长上限（分钟）</span><input type="number" id="set-time-limit" class="w-20 px-3 py-1.5 rounded-lg border border-kin/20 text-center text-sm" min="5" max="120" value="30"></div>
+      </div>
+    </div>
+    
+    <div class="bg-white rounded-xl border border-kin/10 p-5">
+      <h3 class="text-sm font-bold mb-3">📚 学习范围</h3>
+      <div class="space-y-2" id="set-book-toggles"></div>
+    </div>
+    
+    <div class="bg-white rounded-xl border border-kin/10 p-5">
+      <h3 class="text-sm font-bold mb-3">🎯 做题模式</h3>
+      <div class="space-y-2">
+        <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="set-mode-jp-cn" checked> 日→中（看日语选中文）</label>
+        <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="set-mode-cn-jp" checked> 中→日（看中文选日语）</label>
+        <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="set-mode-reading" checked> 读音（看日语选读音）</label>
+        <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="set-mode-fill"> 填空（例句挖空选词）</label>
+        <label class="flex items-center gap-2 text-sm"><input type="checkbox" id="set-mode-dictation"> 🔊 听写（听发音写单词）</label>
+      </div>
+    </div>
+    
+    <button onclick="saveSettings()" class="w-full py-2.5 bg-sumi text-washi rounded-xl text-sm font-medium hover:bg-sumi/90 transition">💾 保存设置</button>
+    
+    <div class="bg-white rounded-xl border border-kin/10 p-5">
+      <h3 class="text-sm font-bold mb-3 text-ake">⚠ 数据管理</h3>
+      <div class="flex gap-2">
+        <button onclick="exportAllData()" class="flex-1 py-2 rounded-lg border border-kin/20 text-sm hover:bg-kin/5 transition">导出全部数据</button>
+        <button onclick="importAllData()" class="flex-1 py-2 rounded-lg border border-kin/20 text-sm hover:bg-kin/5 transition">导入数据</button>
+        <button onclick="resetAllData()" class="flex-1 py-2 rounded-lg border border-ake/20 text-ake text-sm hover:bg-ake/5 transition">重置全部</button>
+      </div>
+    </div>
+    
+    <div class="bg-white rounded-xl border border-kin/10 p-5">
+      <h3 class="text-sm font-bold mb-3">☁️ 多设备同步（GitHub Gist）</h3>
+      <p class="text-xs text-hai mb-3">使用 GitHub Gist 做免费云存储，手机电脑数据同步。<br>需要创建 <a href="https://github.com/settings/tokens" target="_blank" class="text-kin underline">GitHub Token</a>（勾选 gist 权限）和 <a href="https://gist.github.com" target="_blank" class="text-kin underline">Gist</a>。</p>
+      <div class="space-y-2 mb-3">
+        <input id="set-gist-token" class="w-full px-3 py-2 rounded-lg border border-kin/20 text-sm font-mono" placeholder="GitHub Token（ghp_xxxx）" type="password">
+        <input id="set-gist-id" class="w-full px-3 py-2 rounded-lg border border-kin/20 text-sm font-mono" placeholder="Gist ID（URL末尾的哈希值）">
+      </div>
+      <div class="flex gap-2 mb-2">
+        <button onclick="syncUpload()" class="flex-1 py-2 rounded-lg bg-midori/10 text-midori text-sm font-medium hover:bg-midori/20 transition">⬆️ 上传到云端</button>
+        <button onclick="syncDownload()" class="flex-1 py-2 rounded-lg bg-kin/10 text-sumi text-sm font-medium hover:bg-kin/20 transition">⬇️ 从云端下载</button>
+      </div>
+      <p id="sync-status" class="text-xs text-hai min-h-[1.2em]"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════ TAB 5: 阅读 ═══════════ -->
+<section class="tab-content" id="tab-reading">
+  <!-- 智能生成区 -->
+  <div class="bg-gradient-to-r from-sumi/5 to-kin/5 rounded-2xl border border-kin/20 p-5 mb-5" id="reading-generate">
+    <div class="flex items-center justify-between mb-3">
+      <h3 class="text-sm font-bold">📝 基于你的词汇生成短文</h3>
+      <button onclick="generateArticleFromVocab()" class="px-3 py-1.5 bg-sumi text-washi rounded-lg text-xs font-medium hover:bg-sumi/90 transition">🪄 生成短文</button>
+    </div>
+    <div id="gen-recent-words" class="flex flex-wrap gap-1.5 mb-3 text-xs"></div>
+    <div id="gen-result" class="hidden mt-3 p-4 bg-white rounded-xl border border-kin/10">
+      <div class="font-serif leading-relaxed whitespace-pre-wrap text-sumi/90 text-sm" id="gen-content"></div>
+      <div class="mt-3 flex items-center gap-2">
+        <button onclick="speakWord(document.getElementById('gen-content').textContent)" class="text-xs px-2 py-1 rounded-full border border-kin/20 hover:bg-sumi/5">🔊 朗读</button>
+        <button onclick="saveGeneratedArticle()" class="text-xs px-2 py-1 rounded-full bg-kin/10 text-sumi hover:bg-kin/20">💾 保存到文库</button>
+        <button onclick="generateArticleFromVocab()" class="text-xs px-2 py-1 rounded-full border border-kin/20 hover:bg-sumi/5">🔄 换一篇</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- 顶部分类筛选 -->
+  <div class="flex flex-wrap gap-2 mb-4" id="reading-cats">
+    <button class="reading-cat-btn active px-3 py-1.5 rounded-full text-xs font-medium bg-sumi text-washi" data-cat="all">全部</button>
+    <button class="reading-cat-btn px-3 py-1.5 rounded-full text-xs font-medium border border-kin/20 hover:bg-sumi/5" data-cat="email">📧 商务邮件</button>
+    <button class="reading-cat-btn px-3 py-1.5 rounded-full text-xs font-medium border border-kin/20 hover:bg-sumi/5" data-cat="article">📰 行业文章</button>
+    <button class="reading-cat-btn px-3 py-1.5 rounded-full text-xs font-medium border border-kin/20 hover:bg-sumi/5" data-cat="dialogue">🗣️ 场景对话</button>
+  </div>
+  
+  <div class="grid grid-cols-12 gap-5">
+    <!-- 左侧：文章列表 -->
+    <div class="col-span-3 space-y-2">
+      <input id="reading-search" class="w-full px-3 py-1.5 rounded-lg border border-kin/20 text-sm" placeholder="🔍 搜索文章..." oninput="renderReadingList()">
+      <div id="reading-list" class="space-y-1 max-h-[70vh] overflow-y-auto"></div>
+    </div>
+    
+    <!-- 右侧：文章阅读器 -->
+    <div class="col-span-9">
+      <div id="reading-placeholder" class="bg-white rounded-2xl border border-kin/10 p-12 text-center">
+        <p class="text-4xl mb-3">📰</p>
+        <p class="text-hai text-sm">从左栏选择一篇文章开始阅读</p>
+        <p class="text-xs text-hai/60 mt-1">商务邮件 · 行业文章 · 场景对话</p>
+      </div>
+      
+      <div id="reading-viewer" class="hidden bg-white rounded-2xl border border-kin/10 overflow-hidden">
+        <!-- 文章头部 -->
+        <div class="px-6 py-4 border-b border-kin/10 bg-sumi/3 flex items-center justify-between">
+          <div>
+            <h2 class="text-lg font-serif font-bold" id="rv-title"></h2>
+            <p class="text-xs text-hai mt-0.5"><span id="rv-cat"></span> · <span id="rv-level"></span></p>
+          </div>
+          <button onclick="speakArticleText()" class="text-xs px-3 py-1.5 rounded-full border border-kin/20 hover:bg-sumi/5" title="朗读全文">🔊 朗读</button>
+        </div>
+        
+        <!-- 文章正文 -->
+        <div class="p-6">
+          <div class="prose prose-sm max-w-none font-serif leading-relaxed whitespace-pre-wrap text-sumi/90" id="rv-content"></div>
+        </div>
+        
+        <!-- 关键词汇区 -->
+        <div class="px-6 py-3 border-t border-kin/10 bg-kin/5">
+          <h4 class="text-xs uppercase tracking-widest text-hai mb-2">📌 关键词汇</h4>
+          <div id="rv-vocab" class="flex flex-wrap gap-2"></div>
+        </div>
+        
+        <!-- 要点笔记 -->
+        <div id="rv-note-box" class="hidden px-6 py-3 border-t border-kin/10">
+          <h4 class="text-xs uppercase tracking-widest text-hai mb-1">💡 要点笔记</h4>
+          <p class="text-sm text-sumi/80" id="rv-note"></p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ═══════ ADD/EDIT MODAL ═══════ -->
+<div class="modal-overlay hidden" id="word-modal">
+  <div class="bg-white rounded-2xl p-6 w-full max-w-md shadow-2xl">
+    <h3 class="text-lg font-bold mb-4" id="modal-title">添加单词</h3>
+    <div class="space-y-3">
+      <input id="wf-front" class="w-full px-3 py-2 rounded-lg border border-kin/20 text-sm" placeholder="日语（如 見積書）">
+      <input id="wf-back" class="w-full px-3 py-2 rounded-lg border border-kin/20 text-sm" placeholder="读音（如 みつもりしょ）">
+      <input id="wf-meaning" class="w-full px-3 py-2 rounded-lg border border-kin/20 text-sm" placeholder="中文意思（如 报价单）">
+      <input id="wf-example" class="w-full px-3 py-2 rounded-lg border border-kin/20 text-sm" placeholder="例句（如 見積書をお送りいたします。）">
+      <input id="wf-tags" class="w-full px-3 py-2 rounded-lg border border-kin/20 text-sm" placeholder="标签，逗号分隔（如 商务,敬语）">
+      <select id="wf-level" class="w-full px-3 py-2 rounded-lg border border-kin/20 text-sm">
+        <option value="">JLPT等级（可选）</option>
+        <option value="N1">N1</option><option value="N2">N2</option><option value="N3">N3</option><option value="N4">N4</option><option value="N5">N5</option>
+      </select>
+      <textarea id="wf-note" class="w-full px-3 py-2 rounded-lg border border-kin/20 text-sm" rows="2" placeholder="💭 个人联想笔记（如：发音像'三包书'→三包文件=报价单）"></textarea>
+    </div>
+    <div class="flex gap-2 mt-4">
+      <button onclick="saveWord()" class="flex-1 py-2 bg-sumi text-washi rounded-lg text-sm font-medium">保存</button>
+      <button onclick="closeModal()" class="flex-1 py-2 border border-kin/20 rounded-lg text-sm">取消</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════ SCRIPTS ═══════ -->
+<script>
+// ═══════ SM-2 + 队列引擎（内联版本）═══════
+function sm2Update(stats, quality) {
+  // 显式转数字，杜绝 NaN
+  var s = {};
+  s.reviews = (Number(stats.reviews) || 0) + 1;
+  s.correct = Number(stats.correct) || 0;
+  s.correct_streak = Number(stats.correct_streak) || 0;
+  s.interval = Number(stats.interval) || 0;
+  s.ease_factor = Number(stats.ease_factor) || 2.5;
+  s.last_review = new Date().toISOString().split('T')[0];
+  
+  if (quality < 2) {
+    s.interval = 1;
+    s.correct_streak = 0;
+    s.ease_factor = Math.max(1.3, s.ease_factor - 0.2);
+  } else {
+    s.correct++;
+    s.correct_streak++;
+    if (s.interval <= 1) {
+      s.interval = (s.reviews <= 1) ? 1 : 3;
+    } else {
+      s.interval = Math.round(s.interval * s.ease_factor);
+    }
+    s.ease_factor = s.ease_factor + (0.1 - (3 - quality) * (0.08 + (3 - quality) * 0.02));
+    s.ease_factor = Math.max(1.3, Math.min(2.8, s.ease_factor));
+    if (quality === 3 && s.correct_streak >= 3) {
+      s.interval = Math.round(s.interval * 1.3);
+    }
+  }
+  
+  // 终极保险：interval 必须 ≥ 1
+  if (!s.interval || isNaN(s.interval) || s.interval < 1) s.interval = 1;
+  if (isNaN(s.ease_factor)) s.ease_factor = 2.5;
+  
+  var next = new Date();
+  next.setDate(next.getDate() + s.interval);
+  s.next_review = next.toISOString().split('T')[0];
+  return s;
+}
+
+function generateQuizQueue(settings, vocabularyBooks) {
+  var dailyNew = settings.dailyNewWords || 5;
+  var dailyReview = settings.dailyReviewMax || 20;
+  var books = settings.selectedBooks || [];
+  var today = new Date().toISOString().split('T')[0];
+  var reviewQueue = [], newQueue = [];
+  
+  for (var i = 0; i < books.length; i++) {
+    var book = vocabularyBooks[books[i]]; if (!book) continue;
+    for (var j = 0; j < book.words.length; j++) {
+      var word = book.words[j];
+      var s = word.stats || {};
+      
+      // 新词：从未复习过
+      if (!s.reviews || s.reviews === 0) {
+        newQueue.push({ front: word.front, back: word.back, meaning: word.meaning, 
+          example: word.example, tags: word.tags, level: word.level, stats: word.stats, 
+          id: word.id, bookId: books[i], source: 'new' });
+      }
+      // 复习词：学过且到期
+      else if (s.next_review && s.next_review <= today) {
+        reviewQueue.push({ front: word.front, back: word.back, meaning: word.meaning, 
+          example: word.example, tags: word.tags, level: word.level, stats: word.stats, 
+          id: word.id, bookId: books[i], source: 'review' });
+      }
+      // 错题：正确率为0且有复习记录
+      if (s.correct_streak === 0 && s.reviews > 0 && s.last_review !== today) {
+        if (!reviewQueue.some(function(w){return w.id === word.id})) {
+          reviewQueue.push({ front: word.front, back: word.back, meaning: word.meaning, 
+            example: word.example, tags: word.tags, level: word.level, stats: word.stats, 
+            id: word.id, bookId: books[i], source: 'wrong_review' });
+        }
+      }
+    }
+  }
+  
+  // 分别截取上限，各自随机打乱
+  reviewQueue = reviewQueue.slice(0, dailyReview);
+  for (var i = reviewQueue.length - 1; i > 0; i--) { var j = Math.floor(Math.random()*(i+1)); var t = reviewQueue[i]; reviewQueue[i] = reviewQueue[j]; reviewQueue[j] = t; }
+  newQueue = newQueue.slice(0, dailyNew);
+  for (var i = newQueue.length - 1; i > 0; i--) { var j = Math.floor(Math.random()*(i+1)); var t = newQueue[i]; newQueue[i] = newQueue[j]; newQueue[j] = t; }
+  
+  // 复习在前，新词在后（不再混合交错）
+  return { review: reviewQueue, new: newQueue };
+}
+
+function generateQuestion(word, mode, allWords) {
+  const otherWords = allWords.filter(w => w.id !== word.id);
+  const d = shuffleArray(otherWords).slice(0, 3);
+  let q, a, opts;
+  switch (mode) {
+    case 'jp-cn': q = word.front; a = word.meaning; opts = [word.meaning, ...d.map(w=>w.meaning).filter(Boolean)].slice(0,4); break;
+    case 'cn-jp': q = word.meaning; a = word.front; opts = [word.front, ...d.map(w=>w.front).filter(Boolean)].slice(0,4); break;
+    case 'reading': q = word.front; a = word.back; opts = [word.back, ...d.map(w=>w.back).filter(Boolean)].slice(0,4); break;
+    case 'fill': q = (word.example||'').replace(word.front,'＿＿＿'); a = word.front; opts = [word.front, ...d.map(w=>w.front).filter(Boolean)].slice(0,4); break;
+    case 'dictation': q = ''; a = word.front; opts = []; break;
+  }
+  return { question: q, correctAnswer: a, options: shuffleArray(opts).slice(0,4), word, mode };
+}
+
+function shuffleArray(arr) { const a=[...arr]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; }
+</script>
+<script>
+// ═══════ DATA STORE ═══════
+const STORAGE_KEY = 'bun2-japanese-v2';
+let appData = loadData();
+
+function defaultData() {
+  return {
+    settings: {
+      dailyNewWords: 5,
+      dailyReviewMax: 20,
+      timeLimit: 30,
+      selectedBooks: ['business-docs', 'industry-terms'],
+      quizModes: ['jp-cn', 'cn-jp', 'reading'],
+      gistToken: '',
+      gistId: ''
+    },
+    vocabularyBooks: {
+      'business-docs': {
+        id: 'business-docs', name: '📗 商务文书', icon: '📗',
+        words: [
+          {id:'v1',front:'見積書',back:'みつもりしょ',meaning:'报价单',example:'見積書をお送りいたします。',tags:['商务'],level:'N2',stats:{}},
+          {id:'v2',front:'納期',back:'のうき',meaning:'交期',example:'納期は来月の15日でございます。',tags:['物流'],level:'N3',stats:{}},
+          {id:'v3',front:'恐れ入りますが',back:'おそれいりますが',meaning:'不好意思/劳驾',example:'恐れ入りますが、少々お待ちください。',tags:['敬语'],level:'N2',stats:{}},
+          {id:'v4',front:'早急に',back:'そうきゅうに',meaning:'尽快/ASAP',example:'早急に対応させていただきます。',tags:['商务'],level:'N1',stats:{}},
+          {id:'v5',front:'仕様書',back:'しようしょ',meaning:'规格书',example:'仕様書をご確認ください。',tags:['技术'],level:'N2',stats:{}},
+          {id:'v6',front:'在庫',back:'ざいこ',meaning:'库存',example:'在庫状況を確認いたします。',tags:['物流'],level:'N2',stats:{}},
+          {id:'v7',front:'出荷',back:'しゅっか',meaning:'发货',example:'本日出荷予定でございます。',tags:['物流'],level:'N2',stats:{}},
+        ]
+      },
+      'industry-terms': {
+        id: 'industry-terms', name: '🔧 行业术语', icon: '🔧',
+        words: [
+          {id:'v8',front:'USBケーブル',back:'ユーエスビーケーブル',meaning:'USB线缆',example:'USBケーブルの新製品のご案内です。',tags:['产品'],level:'N3',stats:{}},
+          {id:'v9',front:'導体',back:'どうたい',meaning:'导体',example:'高純度の銅導体を使用しております。',tags:['技术'],level:'N1',stats:{}},
+          {id:'v10',front:'絶縁体',back:'ぜつえんたい',meaning:'绝缘体',example:'絶縁体には難燃性素材を採用。',tags:['技术'],level:'N1',stats:{}},
+          {id:'v11',front:'コネクタ',back:'コネクタ',meaning:'连接器',example:'Type-Cコネクタを搭載。',tags:['产品'],level:'N3',stats:{}},
+          {id:'v12',front:'単価',back:'たんか',meaning:'单价',example:'1,000個の場合の単価は500円です。',tags:['商务'],level:'N2',stats:{}},
+        ]
+      },
+      'nhk-vocab': {
+        id: 'nhk-vocab', name: '📰 NHK词汇', icon: '📰',
+        words: [
+          {id:'v13',front:'円相場',back:'えんそうば',meaning:'日元汇率',example:'円相場が急騰しています。',tags:['经济'],level:'N2',stats:{}},
+          {id:'v14',front:'景気',back:'けいき',meaning:'经济景气',example:'景気回復の兆しが見えます。',tags:['经济'],level:'N2',stats:{}},
+        ]
+      }
+    },
+    grammarLibrary: [
+      {id:'g1',point:'〜ように',meaning:'表示目的/状态变化',level:'N2',example:'納期に間に合うように、生産を急いでおります。',tags:['目的','状态']},
+      {id:'g2',point:'〜させていただく',meaning:'请允许我做…（謙譲語）',level:'N2',example:'見積書を作成させていただきます。',tags:['敬语','请求']},
+      {id:'g3',point:'〜次第',meaning:'一…就…',level:'N2',example:'詳細が分かり次第、ご連絡いたします。',tags:['条件','时间']},
+      {id:'g4',point:'〜について',meaning:'关于…',level:'N3',example:'納期についてご相談があります。',tags:['话题']},
+      {id:'g5',point:'〜いたします',meaning:'我做…（謙譲語）',level:'N3',example:'確認いたします。',tags:['敬语']},
+      {id:'g6',point:'〜でしょうか',meaning:'…吗？（丁寧な疑問）',level:'N3',example:'可能でしょうか？',tags:['疑问','敬语']},
+      {id:'g7',point:'お〜ください',meaning:'请您…（尊敬語）',level:'N3',example:'お待ちください。',tags:['敬语','请求']},
+      {id:'g8',point:'〜にあたり',meaning:'在…之际',level:'N1',example:'ご発注にあたり、確認事項がございます。',tags:['正式','商务']},
+    ],
+    learningLog: [],
+    errorLog: [],
+    articles: [
+      {id:'a1',type:'email',category:'报价',title:'初回見積依頼への返信',level:'N2',
+        content:'株式会社ABC\n営業部 田中様\n\n平素より大変お世話になっております。\nTENOVAの朱と申します。\n\nこの度はUSBケーブルの見積依頼をいただき、誠にありがとうございます。\n下記の通り、見積書を作成いたしましたのでご確認ください。\n\n【見積条件】\n・品名：USB Type-C ケーブル（1m）\n・数量：1,000本\n・単価：500円/本（税別）\n・納期：ご注文から約4週間\n・支払条件：納品後30日以内\n\nなお、1,000本以上のご注文の場合、単価の見直しも可能でございます。\nご不明な点がございましたら、お気軽にお問い合わせください。\n\n今後ともよろしくお願い申し上げます。\n\nTENOVA\n朱',
+        vocab:[{f:'見積書',b:'みつもりしょ',m:'报价单'},{f:'納期',b:'のうき',m:'交期'},{f:'単価',b:'たんか',m:'单价'},{f:'税別',b:'ぜいべつ',m:'不含税'},{f:'見直し',b:'みなおし',m:'重新评估'}],
+        note:'ポイント：初回見積では「〜いただきありがとうございます」で感謝を示し、条件を箇条書きで明確に。'},
+      {id:'a2',type:'email',category:'交期',title:'納期に関するお知らせ',level:'N2',
+        content:'株式会社XYZ\n仕入部 山田様\n\nいつもお世話になっております。\nTENOVAの朱でございます。\n\n先日ご注文いただきましたUSBケーブル（受注番号：2026-0610）の\n納期についてご連絡いたします。\n\n当初、6月25日納品予定で進めておりましたが、\n原材料の入荷が予定より早まりましたため、\n6月20日に前倒しして出荷可能となりました。\n\nつきましては、6月20日発送、21日着予定で手配を進めさせていただきます。\nご都合の悪い場合は、お手数ですがご一報ください。\n\n引き続きよろしくお願いいたします。\n\nTENOVA\n朱',
+        vocab:[{f:'受注番号',b:'じゅちゅうばんごう',m:'订单号'},{f:'当初',b:'とうしょ',m:'当初'},{f:'原材料',b:'げんざいりょう',m:'原材料'},{f:'前倒し',b:'まえだおし',m:'提前'},{f:'手配',b:'てはい',m:'安排'}],
+        note:'ポイント：納期前倒しは良いニュース。「〜可能となりました」で丁寧に伝える。'},
+      {id:'a3',type:'email',category:'问候',title:'新規お取引先へのご挨拶',level:'N3',
+        content:'株式会社DEF\n代表取締役 佐藤様\n\n拝啓\n時下ますますご清栄のこととお慶び申し上げます。\n\nこの度、貴社のオンライン展示会にて弊社製品にご興味をお持ちいただき、\n誠にありがとうございます。\n\n弊社TENOVAは、USBケーブル・充電ケーブルの製造を専門とし、\n2018年の創業以来、品質とコストパフォーマンスで\n国内外のお客様よりご好評をいただいております。\n\nつきましては、ぜひ一度サンプルをお送りさせていただければと存じます。\nご希望の仕様がございましたら、お知らせください。\n\nまずは略儀ながら、メールにてご挨拶申し上げます。\n\n敬具\n\nTENOVA\n代表 朱',
+        vocab:[{f:'拝啓',b:'はいけい',m:'敬启（信头语）'},{f:'清栄',b:'せいえい',m:'安康（商务信）'},{f:'弊社',b:'へいしゃ',m:'敝公司'},{f:'貴社',b:'きしゃ',m:'贵公司'},{f:'略儀',b:'りゃくぎ',m:'简略礼节'}],
+        note:'ポイント：日本式ビジネスレターの定型。拝啓〜敬具、時候の挨拶を入れる。'},
+      {id:'a4',type:'email',category:'样品',title:'サンプル送付のご案内',level:'N3',
+        content:'山田様\n\nお世話になっております。TENOVAの朱です。\n\n先日ご依頼いただきましたUSB Type-Cケーブルのサンプルにつきまして、\n本日EMSにて発送いたしました。\n\n【発送内容】\n・USB Type-C to Type-C ケーブル（1m）× 3本\n・USB Type-C to USB-A ケーブル（1m）× 2本\n・製品仕様書（英語・日本語）\n\n追跡番号：EM123456789JP\n到着まで通常5〜7営業日程度かかります。\n\nサンプル到着後、ご確認いただき、ご意見・ご要望がございましたら\nお気軽にお知らせください。\n\nよろしくお願いいたします。',
+        vocab:[{f:'送付',b:'そうふ',m:'寄送'},{f:'発送',b:'はっそう',m:'发货'},{f:'追跡番号',b:'ついせきばんごう',m:'追踪号'},{f:'営業日',b:'えいぎょうび',m:'工作日'},{f:'仕様書',b:'しようしょ',m:'规格书'}],
+        note:'ポイント：サンプル送付時は追跡番号を忘れずに。到着目安も明記。'},
+      {id:'a5',type:'email',category:'催款',title:'お支払いのご確認',level:'N2',
+        content:'株式会社GHI\n経理部 伊藤様\n\nいつもお世話になっております。\nTENOVA経理担当の李と申します。\n\n下記請求書につきまして、お支払い期限が過ぎておりますため、\nご確認いただけますと幸いです。\n\n【対象請求書】\n・請求書番号：INV-2026-0520\n・請求日：2026年5月20日\n・支払期限：2026年6月5日\n・金額：500,000円（税別）\n\nお忙しいところ恐れ入りますが、\nお支払いの予定をお知らせいただけますでしょうか。\n\n万が一、何か不備がございましたらご連絡ください。\n\n何卒よろしくお願い申し上げます。\n\nTENOVA\n李',
+        vocab:[{f:'請求書',b:'せいきゅうしょ',m:'账单'},{f:'経理',b:'けいり',m:'财务'},{f:'期限',b:'きげん',m:'期限'},{f:'不備',b:'ふび',m:'不完备/疏漏'},{f:'何卒',b:'なにとぞ',m:'恳请（郑重）'}],
+        note:'ポイント：催促は直接「払ってください」と言わず「ご確認いただけますと幸いです」と婉曲に。'},
+      {id:'a6',type:'email',category:'投诉',title:'品質不良に関するお詫びと対策',level:'N2',
+        content:'株式会社JKL\n品質管理部 中村様\n\n平素より大変お世話になっております。\nTENOVAの朱でございます。\n\nこの度は、先日納品いたしましたUSBケーブル（ロット番号：20260601）に\nコネクタ部の接触不良が発生しているとのご連絡をいただき、\nご迷惑をおかけしましたことを深くお詫び申し上げます。\n\n早急に社内調査を行いましたところ、\n組立工程の最終検査に不備があったことが判明いたしました。\n\n【再発防止策】\n1. 全数検査の導入\n2. 検査基準の見直しと作業者教育の強化\n3. 出荷前抜き取り検査の頻度倍増\n\nつきましては、不良品の全数交換を本日付けで手配いたします。\nまた、今回の件を受け、全ロットの再検査も実施中でございます。\n\n今後このようなことがないよう、品質管理体制の強化に努めてまいります。\n何卒ご容赦いただけますようお願い申し上げます。\n\nTENOVA\n朱',
+        vocab:[{f:'不良',b:'ふりょう',m:'不良/缺陷'},{f:'お詫び',b:'おわび',m:'道歉'},{f:'判明',b:'はんめい',m:'查明'},{f:'再発防止',b:'さいはつぼうし',m:'防止再发'},{f:'容赦',b:'ようしゃ',m:'宽恕'}],
+        note:'ポイント：謝罪→原因説明→対策→再発防止の4段階。具体策を箇条書きで示すと誠意が伝わる。'},
+      {id:'a7',type:'email',category:'问候',title:'年末のご挨拶',level:'N3',
+        content:'株式会社MNO\n代表取締役 渡辺様\n\n本年も格別のご愛顧を賜り、誠にありがとうございました。\nおかげさまで、新製品のUSB Type-Cシリーズも好評をいただき、\n無事に年末を迎えることができました。\n\n来年もより一層、品質とサービスの向上に努めてまいります。\n引き続きご指導ご鞭撻のほど、よろしくお願い申し上げます。\n\nなお、弊社の年末年始休業は下記の通りでございます。\n\n【年末年始休業】\n12月29日（金）〜 1月4日（木）\n1月5日（金）より通常営業\n\nどうぞ良いお年をお迎えください。\n\nTENOVA\n朱',
+        vocab:[{f:'格別',b:'かくべつ',m:'特别'},{f:'愛顧',b:'あいこ',m:'惠顾'},{f:'賜る',b:'たまわる',m:'蒙受（谦让）'},{f:'鞭撻',b:'べんたつ',m:'鞭策/指导'},{f:'休業',b:'きゅうぎょう',m:'停业休息'}],
+        note:'ポイント：年末は「おかげさまで」で感謝＋来年の抱負＋休業案内の3点セット。'},
+      {id:'a8',type:'email',category:'商谈',title:'新製品のご案内',level:'N2',
+        content:'平素よりお世話になっております。\nTENOVA営業担当の朱でございます。\n\nこの度、弊社では新しく「急速充電対応USB Type-Cケーブル」の\n販売を開始いたしましたのでご案内申し上げます。\n\n【新製品の特長】\n・最大100Wの急速充電対応（PD 3.0準拠）\n・データ転送速度 最大10Gbps\n・ナイロンブレード採用で従来比3倍の耐久性\n・長さ 0.5m / 1m / 2m の3種類\n\n【価格（税別）】\n0.5m：350円\n1m：450円\n2m：650円\n※500本以上のご注文でさらに5%割引\n\n製品の詳細資料とサンプルをご用意しております。\nご興味をお持ちいただけましたら、ぜひご連絡ください。\n\nよろしくお願いいたします。',
+        vocab:[{f:'急速充電',b:'きゅうそくじゅうでん',m:'快速充电'},{f:'準拠',b:'じゅんきょ',m:'符合/依据'},{f:'従来比',b:'じゅうらいひ',m:'与以往相比'},{f:'耐久性',b:'たいきゅうせい',m:'耐久性'},{f:'割引',b:'わりびき',m:'折扣'}],
+        note:'ポイント：新製品案内は特徴→スペック→価格の順。特長は数字で示すと説得力UP。'}
+    ],
+    todayQuizDone: false,
+    todayDate: new Date().toISOString().split('T')[0],
+    lastSync: null,
+    lastSyncLocal: null,
+    streak: 0,
+    lastStudyDate: null
+  };
+}
+
+function loadData() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const d = JSON.parse(raw);
+      // 补齐缺失字段
+      if (!d.settings) d.settings = defaultData().settings;
+      if (!d.settings.quizModes) d.settings.quizModes = ['jp-cn','cn-jp','reading'];
+      if (!d.grammarLibrary) d.grammarLibrary = defaultData().grammarLibrary;
+      if (!d.learningLog) d.learningLog = [];
+      if (!d.errorLog) d.errorLog = [];
+      if (!d.articles || d.articles.length === 0) d.articles = defaultData().articles;
+      return d;
+    }
+  } catch(e) {}
+  return defaultData();
+}
+
+var _repaired = false;
+
+function normalizeLevels() {
+  var changed = false;
+  for (var bid in appData.vocabularyBooks) {
+    var book = appData.vocabularyBooks[bid];
+    for (var i = 0; i < book.words.length; i++) {
+      var lv = book.words[i].level;
+      if (!lv || typeof lv !== 'string') continue;
+      var clean = lv.toUpperCase().replace(/^JLPT[-_]?/i, '').replace(/[-_]/g, '').trim();
+      var valid = {'N1':1,'N2':1,'N3':1,'N4':1,'N5':1};
+      if (valid[clean] && clean !== lv) {
+        book.words[i].level = clean;
+        changed = true;
+      }
+    }
+  }
+  if (changed) { invalidateCache(); saveData(); }
+}
+
+function repairData() {
+  if (_repaired) {
+    // 等级格式修正每次都要跑（数据可能来自不同导入器）
+    normalizeLevels();
+    return;
+  }
+  _repaired = true;
+  var changed = false;
+  for (var bid in appData.vocabularyBooks) {
+    var book = appData.vocabularyBooks[bid];
+    for (var i = 0; i < book.words.length; i++) {
+      var s = book.words[i].stats || {};
+      if (isNaN(s.interval)) { s.interval = 1; changed = true; }
+      if (isNaN(s.ease_factor)) { s.ease_factor = 2.5; changed = true; }
+      if (isNaN(s.correct_streak)) { s.correct_streak = 0; changed = true; }
+      book.words[i].stats = s;
+    }
+  }
+  if (appData.learningLog) {
+    for (var i = 0; i < appData.learningLog.length; i++) {
+      if (isNaN(appData.learningLog[i].correct)) appData.learningLog[i].correct = 0;
+      if (isNaN(appData.learningLog[i].wrong)) appData.learningLog[i].wrong = 0;
+    }
+  }
+  if (changed) invalidateCache();
+  normalizeLevels();
+}
+
+function saveData() {
+  invalidateCache();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(appData));
+}
+
+// ═══════ TAB SWITCHING ═══════
+document.querySelectorAll('.tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.add('active');
+    if (btn.dataset.tab === 'vocab') renderVocabTab();
+    if (btn.dataset.tab === 'grammar') renderGrammarTab();
+    if (btn.dataset.tab === 'settings') renderSettingsTab();
+    if (btn.dataset.tab === 'learn') renderLearnTab();
+    if (btn.dataset.tab === 'reading') renderReadingTab();
+  });
+});
+
+// ═══════ LEARN TAB ═══════
+var quizQueue = [], reviewQueue = [], newQueue = [];
+let quizIndex = 0;
+let quizCorrect = 0;
+let quizWrong = 0;
+let currentQuizModes = [];
+let currentModeIndex = 0;
+
+var _allWordsCache = null;
+function getAllWords() {
+  if (_allWordsCache) return _allWordsCache;
+  var words = [];
+  for (var bookId in appData.vocabularyBooks) {
+    var book = appData.vocabularyBooks[bookId];
+    for (var i = 0; i < book.words.length; i++) {
+      words.push({ front: book.words[i].front, back: book.words[i].back, meaning: book.words[i].meaning, 
+        example: book.words[i].example, tags: book.words[i].tags, level: book.words[i].level,
+        note: book.words[i].note,
+        stats: book.words[i].stats, id: book.words[i].id, bookId: bookId });
+    }
+  }
+  _allWordsCache = words;
+  return words;
+}
+function invalidateCache() { _allWordsCache = null; }
+
+function startQuiz() {
+  try {
+  const today = new Date().toISOString().split('T')[0];
+  if (appData.todayQuizDone && appData.todayDate === today) {
+    document.getElementById('quiz-placeholder').style.display = 'none';
+    document.getElementById('quiz-content').style.display = 'none';
+    document.getElementById('quiz-done').style.display = 'block';
+    document.getElementById('done-msg').textContent = '今日已全部完成！';
+    document.getElementById('done-detail').textContent = 'お疲れ様でした。明日も頑張りましょう。';
+    return;
+  }
+  
+  appData.todayDate = today;
+  
+  // 安全获取设置
+  const modes = (appData.settings && appData.settings.quizModes) ? appData.settings.quizModes : [];
+  currentQuizModes = modes.length > 0 ? [...modes] : ['jp-cn'];
+  
+  // 安全获取选书
+  const sBooks = (appData.settings && appData.settings.selectedBooks) ? appData.settings.selectedBooks : [];
+  const dNew = (appData.settings && appData.settings.dailyNewWords) ? appData.settings.dailyNewWords : 5;
+  const dReview = (appData.settings && appData.settings.dailyReviewMax) ? appData.settings.dailyReviewMax : 20;
+  
+  var result = generateQuizQueue(
+    { dailyNewWords: dNew, dailyReviewMax: dReview, selectedBooks: sBooks },
+    appData.vocabularyBooks
+  );
+  
+  reviewQueue = result.review;
+  newQueue = result.new;
+  quizQueue = reviewQueue.concat(newQueue);
+  
+  if (quizQueue.length === 0) {
+    alert('没有可用的单词！请先在词库中添加单词，或调整设置中的学习范围。');
+    return;
+  }
+  
+  quizIndex = 0; quizCorrect = 0; quizWrong = 0; currentModeIndex = 0;
+  
+  document.getElementById('quiz-placeholder').style.display = 'none';
+  document.getElementById('quiz-done').style.display = 'none';
+  document.getElementById('quiz-content').style.display = 'block';
+  document.getElementById('quiz-stats').style.display = 'block';
+  
+  var btn = document.getElementById('btn-start');
+  btn.textContent = '进行中…';
+  btn.disabled = true;
+  document.getElementById('btn-exit').classList.remove('hidden');
+  
+  document.getElementById('q-review-count').textContent = reviewQueue.length;
+  document.getElementById('q-new-count').textContent = newQueue.length;
+  document.getElementById('q-total-count').textContent = quizQueue.length;
+  document.getElementById('q-source-info').textContent = '复习'+reviewQueue.length+' → 新词'+newQueue.length+'（复习优先）';
+  
+  updateStats();
+  showQuestion();
+  } catch(e) { alert('启动做题出错: '+e.message); console.error(e); }
+}
+
+function showQuestion() {
+  try {
+  if (quizIndex >= quizQueue.length) { finishQuiz(); return; }
+  var word = quizQueue[quizIndex];
+  var allWords = getAllWords();
+  var mode = currentQuizModes[currentModeIndex % currentQuizModes.length];
+  currentModeIndex++;
+  var q = generateQuestion(word, mode, allWords);
+  q._mode = mode; q._word = word;
+  quizQueue[quizIndex]._question = q;
+  
+  document.getElementById('q-progress').textContent = '第 '+(quizIndex+1)+'/'+quizQueue.length+' 题';
+  document.getElementById('q-mode-badge').textContent = modeLabel(mode);
+  document.getElementById('q-feedback').style.display = 'none';
+  document.getElementById('q-next-btn').style.display = 'none';
+  
+  var optsDiv = document.getElementById('q-options');
+  
+  if (mode === 'dictation') {
+    document.getElementById('q-question').textContent = '🔊 请听发音，输入日语单词';
+    speakWord(word.front);
+    optsDiv.innerHTML = '<input id="dict-input" class="w-full px-4 py-3 rounded-xl border border-kin/20 bg-white text-lg text-center font-serif" placeholder="输入你听到的日语..." onkeydown="if(event.key===\'Enter\')answerDictation()">' +
+      '<button onclick="answerDictation()" class="mt-3 w-full py-2.5 bg-sumi text-washi rounded-xl text-sm font-medium">提交</button>' +
+      '<button onclick="speakWord(quizQueue[quizIndex].front)" class="mt-2 w-full py-2 border border-kin/20 rounded-xl text-sm text-hai hover:bg-sumi/5">🔊 再听一遍</button>';
+  } else {
+    document.getElementById('q-question').textContent = q.question;
+    optsDiv.innerHTML = q.options.map(function(opt, i) {
+      return '<button class="quiz-option p-4 rounded-xl border border-kin/20 bg-white text-sm text-left hover:bg-sumi/3 transition" onclick="answerQuestion('+i+')" data-idx="'+i+'">'+String.fromCharCode(65+i)+'. '+opt+'</button>';
+    }).join('');
+  }
+  
+  document.getElementById('quiz-content').style.display = 'block';
+  document.getElementById('quiz-done').style.display = 'none';
+  } catch(e) { alert('显示题目出错: '+e.message); }
+}
+
+function answerQuestion(idx) {
+  try {
+  if (document.getElementById('q-next-btn').style.display !== 'none') return;
+  var q = quizQueue[quizIndex]._question;
+  if (!q) return;
+  var isCorrect = q.options[idx] === q.correctAnswer;
+  var buttons = document.querySelectorAll('#q-options .quiz-option');
+  for (var i = 0; i < buttons.length; i++) { buttons[i].disabled = true; }
+  var correctIdx = q.options.indexOf(q.correctAnswer);
+  for (var i = 0; i < buttons.length; i++) { if (i === correctIdx) buttons[i].classList.add('correct'); }
+  
+  if (!isCorrect) {
+    buttons[idx].classList.add('wrong');
+    quizWrong++;
+  } else {
+    quizCorrect++;
+  }
+  
+  var quality = isCorrect ? (quizQueue[quizIndex].source === 'new' ? 2 : 3) : 0;
+  var stats = quizQueue[quizIndex].stats || {};
+  var newStats = sm2Update(stats, quality);
+  updateWordStats(quizQueue[quizIndex].id, newStats);
+  trackWeakness(q._mode, isCorrect, (q.word||{}).level||'');
+  
+  var fb = document.getElementById('q-feedback');
+  fb.style.display = 'block';
+  
+  if (isCorrect) {
+    document.getElementById('q-fb-text').innerHTML = '<span class="text-midori">✅ 正确！</span> <b>'+q.correctAnswer+'</b>';
+    speakWord(q.word.front); // TTS 朗读
+  } else {
+    document.getElementById('q-fb-text').innerHTML = '<span class="text-ake">❌ 错误</span> 正确答案是 <b>'+q.correctAnswer+'</b>';
+    // 错误提示：尝试给首字提示
+    if (q.word.front && q.word.front.length > 0) {
+      var hint = q.word.front.charAt(0)+'...';
+      document.getElementById('q-fb-text').innerHTML += ' <span class="text-xs text-hai">💡提示: '+hint+'</span>';
+    }
+  }
+  
+  if (q.word.example) {
+    document.getElementById('q-fb-example').innerHTML = '📝 '+q.word.example;
+  } else {
+    document.getElementById('q-fb-example').textContent = '';
+  }
+  if (q.word.note) {
+    document.getElementById('q-fb-note').innerHTML = '💭 '+q.word.note;
+    document.getElementById('q-fb-note').style.display = 'block';
+  } else {
+    document.getElementById('q-fb-note').style.display = 'none';
+  }
+  
+  document.getElementById('q-next-btn').style.display = 'block';
+  updateStats();
+  } catch(e) { alert('判题出错: '+e.message); }
+}
+
+function updateWordStats(wordId, newStats) {
+  for (const [bookId, book] of Object.entries(appData.vocabularyBooks)) {
+    const idx = book.words.findIndex(w => w.id === wordId);
+    if (idx >= 0) {
+      book.words[idx].stats = newStats;
+      saveData();
+      return;
+    }
+  }
+}
+
+function nextQuestion() {
+  quizIndex++;
+  showQuestion();
+}
+
+function finishQuiz() {
+  document.getElementById('quiz-content').style.display = 'none';
+  document.getElementById('quiz-done').style.display = 'block';
+  
+  const total = quizCorrect + quizWrong;
+  const rate = total > 0 ? Math.round(quizCorrect/total*100) : 0;
+  
+  document.getElementById('done-msg').textContent = '正确率 '+rate+'%（'+quizCorrect+'/'+total+'）';
+  document.getElementById('done-detail').textContent = quizWrong > 0 
+    ? '错题已自动加入明日复习队列。间隔重复算法已更新。' 
+    : '全部正确！间隔已扩展，下次复习日期已更新。';
+  
+  appData.todayQuizDone = true;
+  updateStreak();
+  saveData();
+  celebrate();
+  
+  document.getElementById('btn-start').textContent = '已完成 ✓';
+  document.getElementById('btn-exit').classList.add('hidden');
+  
+  // 自动同步到云端（如果已配置）
+  autoUpload();
+}
+
+function exitQuiz() {
+  if (confirm('确定退出当前学习？已完成题目的进度将保存。')) {
+    resetQuiz();
+  }
+}
+
+function resetQuiz() {
+  quizQueue = []; reviewQueue = []; newQueue = []; quizIndex = 0; quizCorrect = 0; quizWrong = 0;
+  document.getElementById('quiz-content').style.display = 'none';
+  document.getElementById('quiz-done').style.display = 'none';
+  document.getElementById('quiz-placeholder').style.display = 'block';
+  document.getElementById('quiz-stats').style.display = 'none';
+  document.getElementById('q-review-count').textContent = '0';
+  document.getElementById('q-new-count').textContent = '0';
+  document.getElementById('q-total-count').textContent = '0';
+  document.getElementById('q-source-info').textContent = '点击开始做题生成今日队列';
+  document.getElementById('btn-start').textContent = '开始做题';
+  document.getElementById('btn-start').disabled = false;
+  document.getElementById('btn-exit').classList.add('hidden');
+  appData.todayQuizDone = false;
+  saveData();
+  updateStats();
+}
+
+function trackWeakness(mode, isCorrect, level) {
+  if (!appData.errorLog) appData.errorLog = [];
+  var entry = {
+    mode: mode,
+    wordId: quizQueue[quizIndex].id,
+    front: quizQueue[quizIndex].front,
+    meaning: quizQueue[quizIndex].meaning,
+    level: level || '',
+    correct: isCorrect,
+    time: new Date().toISOString()
+  };
+  appData.errorLog.push(entry);
+  // 只保留最近 500 条避免膨胀
+  if (appData.errorLog.length > 500) appData.errorLog = appData.errorLog.slice(-500);
+}
+
+function modeLabel(mode) {
+  var map = { 'jp-cn': '日→中', 'cn-jp': '中→日', 'reading': '读音', 'fill': '填空', 'dictation': '听写' };
+  return map[mode] || mode;
+}
+
+function answerDictation() {
+  var input = document.getElementById('dict-input');
+  if (!input) return;
+  var userAnswer = input.value.trim();
+  if (!userAnswer) return;
+  var q = quizQueue[quizIndex]._question;
+  var isCorrect = userAnswer === q.correctAnswer;
+  input.disabled = true;
+  var btns = document.querySelectorAll('#q-options button');
+  for (var i = 0; i < btns.length; i++) btns[i].disabled = true;
+  if (!isCorrect) quizWrong++; else quizCorrect++;
+  var quality = isCorrect ? (quizQueue[quizIndex].source === 'new' ? 2 : 3) : 0;
+  updateWordStats(quizQueue[quizIndex].id, sm2Update(quizQueue[quizIndex].stats||{}, quality));
+  trackWeakness('dictation', isCorrect, q.word.level||'');
+  var fb = document.getElementById('q-feedback');
+  fb.style.display = 'block';
+  document.getElementById('q-fb-text').innerHTML = isCorrect 
+    ? '<span class="text-midori">✅ 正确！</span> <b>'+q.correctAnswer+'</b>' 
+    : '<span class="text-ake">❌ 你写的是 <b>'+userAnswer+'</b></span> 正确答案: <b>'+q.correctAnswer+'</b>';
+  document.getElementById('q-fb-example').textContent = q.word.example ? '📝 '+q.word.example : '';
+  if (q.word.note) {
+    document.getElementById('q-fb-note').innerHTML = '💭 '+q.word.note;
+    document.getElementById('q-fb-note').style.display = 'block';
+  } else {
+    document.getElementById('q-fb-note').style.display = 'none';
+  }
+  document.getElementById('q-next-btn').style.display = 'block';
+  updateStats();
+} // answerDictation
+
+function updateStreak() {
+  const today = new Date().toISOString().split('T')[0];
+  const yesterday = new Date(Date.now()-86400000).toISOString().split('T')[0];
+  
+  if (appData.lastStudyDate === yesterday) {
+    appData.streak++;
+  } else if (appData.lastStudyDate !== today) {
+    appData.streak = 1;
+  }
+  appData.lastStudyDate = today;
+  saveData();
+  updateHeader();
+}
+
+function updateStats() {
+  document.getElementById('stat-correct').textContent = quizCorrect;
+  document.getElementById('stat-wrong').textContent = quizWrong;
+  const total = quizCorrect + quizWrong;
+  document.getElementById('stat-bar').style.width = total > 0 ? `${Math.round(quizCorrect/total*100)}%` : '0%';
+}
+
+function renderLearnTab() {
+  // 重置今日如果日期变了
+  const today = new Date().toISOString().split('T')[0];
+  if (appData.todayDate !== today) {
+    appData.todayDate = today;
+    appData.todayQuizDone = false;
+    quizQueue = [];
+    quizIndex = 0;
+    quizCorrect = 0;
+    quizWrong = 0;
+    document.getElementById('quiz-content').style.display = 'none';
+    document.getElementById('quiz-done').style.display = 'none';
+    document.getElementById('quiz-placeholder').style.display = 'block';
+    document.getElementById('quiz-stats').style.display = 'none';
+    document.getElementById('btn-start').textContent = '开始做题';
+    document.getElementById('btn-start').disabled = false;
+    document.getElementById('q-review-count').textContent = '0';
+    document.getElementById('q-new-count').textContent = '0';
+    document.getElementById('q-total-count').textContent = '0';
+    document.getElementById('q-source-info').textContent = '点击"开始做题"生成今日队列';
+  }
+  
+  // 统计
+  const allWords = getAllWords();
+  const mastered = allWords.filter(w => w.stats && w.stats.correct_streak >= 3).length;
+  
+  document.getElementById('stat-total-words').textContent = allWords.length;
+  document.getElementById('stat-mastered').textContent = mastered;
+  document.getElementById('stat-today-reviews').textContent = quizQueue.length || 0;
+  
+  const totalDone = quizCorrect + quizWrong;
+  document.getElementById('stat-accuracy').textContent = totalDone > 0 ? Math.round(quizCorrect/totalDone*100)+'%' : '-';
+  
+  // 更新简报横幅
+  var dueCount = allWords.filter(function(w){ var s=w.stats||{}; return s.reviews>0 && s.next_review && s.next_review<=today; }).length;
+  var weakCount = allWords.filter(function(w){ var s=w.stats||{}; return s.reviews>=3 && (s.correct||0)/Math.max(s.reviews||1,1)<0.5; }).length;
+  document.getElementById('banner-due').textContent = dueCount;
+  var msg = dueCount > 0 ? '今日有 <b class="text-kin">'+dueCount+'</b> 个单词待复习' : '✅ 所有单词都跟上进度了！';
+  if (weakCount > 0) msg += ' · <span class="text-ake">'+weakCount+'</span> 个薄弱词需加强';
+  document.getElementById('banner-msg').innerHTML = msg;
+  
+  updateHeader();
+  renderChart();
+  renderRecords();
+  renderWeaknessPanel();
+  renderQuickBooks();
+}
+
+// ═══════ QUICK BOOK SELECT ═══════
+function renderQuickBooks() {
+  var div = document.getElementById('quick-book-select');
+  var books = appData.vocabularyBooks || {};
+  var sel = appData.settings.selectedBooks || [];
+  div.innerHTML = '';
+  for (var id in books) {
+    var b = books[id];
+    var on = sel.indexOf(id) >= 0;
+    div.innerHTML += '<button class="text-xs px-3 py-1.5 rounded-full border transition font-medium ' + 
+      (on ? 'bg-sumi text-washi border-sumi' : 'bg-white text-sumi border-kin/20 hover:bg-sumi/5') + 
+      '" onclick="toggleQuickBook(\''+id+'\')">' + (b.icon||'📗') + ' ' + b.name + ' (' + b.words.length + ')</button>';
+  }
+}
+function toggleQuickBook(bookId) {
+  var sel = appData.settings.selectedBooks || [];
+  var idx = sel.indexOf(bookId);
+  if (idx >= 0) sel.splice(idx, 1); else sel.push(bookId);
+  appData.settings.selectedBooks = sel;
+  saveData();
+  renderQuickBooks();
+  renderLearnTab();
+}
+
+// ═══════ LEARNING RECORDS ═══════
+function renderRecords() {
+  var allWords = getAllWords();
+  var today = new Date().toISOString().split('T')[0];
+  
+  // 待复习词
+  var dueWords = allWords.filter(function(w) {
+    var s = w.stats || {};
+    return s.reviews > 0 && s.next_review && s.next_review <= today;
+  });
+  var dueDiv = document.getElementById('records-due');
+  if (dueWords.length === 0) {
+    dueDiv.innerHTML = '<p class="text-midori">✅ 全部跟上进度！</p>';
+  } else {
+    dueDiv.innerHTML = dueWords.slice(0, 10).map(function(w) {
+      var lv = w.level || '-';
+      return '<div class="flex items-center justify-between py-1 px-2 rounded bg-ake/5"><span>'+w.front+' <span class="text-xs text-hai">('+w.meaning+')</span></span><span class="text-xs px-1.5 py-0.5 rounded-full bg-ake/10 text-ake">'+lv+'</span></div>';
+    }).join('') + (dueWords.length > 10 ? '<p class="text-xs text-hai mt-1">还有 '+(dueWords.length-10)+' 个…</p>' : '');
+  }
+  
+  // 薄弱词（正确率 < 50% 且有足够复习次数）
+  var weakWords = allWords.filter(function(w) {
+    var s = w.stats || {};
+    var total = (s.correct || 0) + ((s.reviews || 0) - (s.correct || 0));
+    return s.reviews >= 3 && s.correct > 0 && (s.correct / Math.max(s.reviews,1)) < 0.5;
+  });
+  var weakDiv = document.getElementById('records-weak');
+  if (weakWords.length === 0) {
+    weakDiv.innerHTML = '<p class="text-midori">✅ 暂无薄弱词！</p>';
+  } else {
+    weakDiv.innerHTML = weakWords.slice(0, 10).map(function(w) {
+      var s = w.stats || {};
+      var rate = Math.round((s.correct||0)/Math.max(s.reviews||1,1)*100);
+      return '<div class="flex items-center justify-between py-1 px-2 rounded bg-kin/5"><span>'+w.front+' ('+w.meaning+')</span><span class="text-xs text-ake">'+rate+'%</span></div>';
+    }).join('');
+  }
+  
+  // 每日统计
+  var dailyDiv = document.getElementById('records-daily');
+  var totalReviews = allWords.reduce(function(s,w){ return s + ((w.stats && w.stats.reviews) || 0); }, 0);
+  var totalCorrect = allWords.reduce(function(s,w){ return s + ((w.stats && w.stats.correct) || 0); }, 0);
+  var overallRate = totalReviews > 0 ? Math.round(totalCorrect/totalReviews*100) : 0;
+  var mastered = allWords.filter(function(w){ return w.stats && w.stats.correct_streak >= 3; }).length;
+  
+  dailyDiv.innerHTML = 
+    '<span class="mr-4">📝 总复习: <b>'+totalReviews+'</b> 次</span>' +
+    '<span class="mr-4">🎯 总正确率: <b>'+overallRate+'%</b></span>' +
+    '<span class="mr-4">⭐ 已掌握: <b>'+mastered+'</b> 词</span>' +
+    '<span>📅 待复习: <b>'+dueWords.length+'</b> 词</span>';
+}
+
+function renderWeaknessPanel() {
+  var log = appData.errorLog || [];
+  var modes = ['jp-cn', 'cn-jp', 'reading', 'fill', 'dictation'];
+  var modeLabels = { 'jp-cn': '日→中', 'cn-jp': '中→日', 'reading': '读音', 'fill': '填空', 'dictation': '听写' };
+  
+  // 没有数据时
+  if (log.length === 0) {
+    document.getElementById('weakness-summary').textContent = '📭 还没有答题记录，开始做题后会显示弱点分析。';
+    document.getElementById('weakness-mode').innerHTML = '<p class="text-hai">暂无数据</p>';
+    document.getElementById('weakness-level').innerHTML = '<p class="text-hai">暂无数据</p>';
+    document.getElementById('weakness-topwords').innerHTML = '<p class="text-hai">暂无数据</p>';
+    return;
+  }
+  
+  var total = log.length;
+  var correct = 0;
+  for (var i = 0; i < log.length; i++) { if (log[i].correct) correct++; }
+  var rate = Math.round(correct / total * 100);
+  
+  // 总结
+  var summary = '总计 <b>'+total+'</b> 次答题，正确率 <b>'+rate+'%</b>。';
+  if (rate >= 80) summary += ' <span class="text-midori">表现优秀！</span>';
+  else if (rate >= 60) summary += ' <span class="text-kin">还有提升空间。</span>';
+  else summary += ' <span class="text-ake">需要加强练习！</span>';
+  document.getElementById('weakness-summary').innerHTML = summary;
+  
+  // 按题型统计
+  var modeHTML = '';
+  for (var m = 0; m < modes.length; m++) {
+    var modeLogs = log.filter(function(l) { return l.mode === modes[m]; });
+    if (modeLogs.length === 0) continue;
+    var mCorrect = 0;
+    for (var j = 0; j < modeLogs.length; j++) { if (modeLogs[j].correct) mCorrect++; }
+    var mRate = Math.round(mCorrect / modeLogs.length * 100);
+    var barW = Math.max(2, mRate);
+    var barColor = mRate >= 80 ? 'bg-midori' : mRate >= 60 ? 'bg-kin' : 'bg-ake';
+    modeHTML += '<div class="flex items-center gap-2"><span class="w-16 text-xs">'+modeLabels[modes[m]]+'</span>' +
+      '<div class="flex-1 h-3 bg-sumi/5 rounded-full overflow-hidden"><div class="h-full '+barColor+' rounded-full" style="width:'+barW+'%"></div></div>' +
+      '<span class="text-xs w-10 text-right">'+mRate+'%</span><span class="text-xs text-hai">('+modeLogs.length+'次)</span></div>';
+  }
+  document.getElementById('weakness-mode').innerHTML = modeHTML || '<p class="text-hai">暂无数据</p>';
+  
+  // 按等级统计
+  var levels = {};
+  for (var i2 = 0; i2 < log.length; i2++) {
+    var lv = log[i2].level || '未知';
+    if (!levels[lv]) levels[lv] = { total: 0, correct: 0 };
+    levels[lv].total++;
+    if (log[i2].correct) levels[lv].correct++;
+  }
+  var levelHTML = '';
+  var levelOrder = ['N1', 'N2', 'N3', 'N4', 'N5'];
+  for (var l = 0; l < levelOrder.length; l++) {
+    var lv = levelOrder[l];
+    if (!levels[lv]) continue;
+    var lRate = Math.round(levels[lv].correct / levels[lv].total * 100);
+    var lBarW = Math.max(2, lRate);
+    var lBarColor = lRate >= 80 ? 'bg-midori' : lRate >= 60 ? 'bg-kin' : 'bg-ake';
+    levelHTML += '<div class="flex items-center gap-2"><span class="w-10 text-xs">'+lv+'</span>' +
+      '<div class="flex-1 h-3 bg-sumi/5 rounded-full overflow-hidden"><div class="h-full '+lBarColor+' rounded-full" style="width:'+lBarW+'%"></div></div>' +
+      '<span class="text-xs w-10 text-right">'+lRate+'%</span><span class="text-xs text-hai">('+levels[lv].total+'次)</span></div>';
+  }
+  document.getElementById('weakness-level').innerHTML = levelHTML || '<p class="text-hai">暂无数据</p>';
+  
+  // 高频错词 TOP 5
+  var wordErrors = {};
+  for (var i3 = 0; i3 < log.length; i3++) {
+    if (log[i3].correct) continue;
+    var wid = log[i3].wordId;
+    if (!wordErrors[wid]) wordErrors[wid] = { count: 0, front: log[i3].front, meaning: log[i3].meaning };
+    wordErrors[wid].count++;
+  }
+  var topWords = [];
+  for (var key in wordErrors) { topWords.push(wordErrors[key]); }
+  topWords.sort(function(a, b) { return b.count - a.count; });
+  topWords = topWords.slice(0, 5);
+  
+  var topHTML = '';
+  for (var t = 0; t < topWords.length; t++) {
+    topHTML += '<div class="flex items-center justify-between py-1 px-2 rounded bg-ake/5"><span>'+topWords[t].front+' <span class="text-xs text-hai">('+topWords[t].meaning+')</span></span><span class="text-xs text-ake font-bold">错 '+topWords[t].count+' 次</span></div>';
+  }
+  if (topWords.length === 0) topHTML = '<p class="text-midori">✅ 暂无错题记录！</p>';
+  document.getElementById('weakness-topwords').innerHTML = topHTML;
+}
+
+// ═══════ VOCAB TAB ═══════
+var selectedVocabBook = null;
+var allWordsCache = [];
+
+function renderVocabTab() {
+  var list = document.getElementById('vocab-book-list');
+  var totalAll = 0;
+  for (var id in appData.vocabularyBooks) totalAll += appData.vocabularyBooks[id].words.length;
+  
+  list.innerHTML = '<div class="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition text-sm ' + 
+    (selectedVocabBook===null?'bg-sumi text-washi':'hover:bg-sumi/5') + 
+    '" onclick="selectVocabBook(null)"><span>📚 全部词库</span><span class="text-xs opacity-60">'+totalAll+'词</span></div>';
+  
+  for (var id in appData.vocabularyBooks) {
+    var book = appData.vocabularyBooks[id];
+    var sel = selectedVocabBook === id;
+    list.innerHTML += '<div class="flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition text-sm ' + 
+      (sel?'bg-sumi text-washi':'hover:bg-sumi/5') + 
+      '" onclick="selectVocabBook(\''+id+'\')"><span>'+book.icon+' '+book.name+'</span><span class="text-xs opacity-60">'+book.words.length+'词</span></div>';
+  }
+  
+  // 先清空搜索再渲染
+  vocabPage = 1;
+  var si = document.getElementById('vocab-search');
+  if (si) si.value = '';
+  vocabFilterLevel = 'all';
+  var btns = document.querySelectorAll('.level-filter');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+  if (btns.length > 0) btns[0].classList.add('active');
+  
+  if (selectedVocabBook === null) {
+    document.getElementById('vocab-book-title').textContent = '📚 全部词库';
+    document.getElementById('th-book-name').style.display = '';
+    renderAllWords();
+  } else {
+    var bk = appData.vocabularyBooks[selectedVocabBook];
+    if (bk) {
+      document.getElementById('vocab-book-title').textContent = bk.icon + ' ' + bk.name;
+      document.getElementById('th-book-name').style.display = 'none';
+      renderVocabTableForBook(bk);
+    } else { selectedVocabBook = null; renderVocabTab(); }
+  }
+}
+
+function selectVocabBook(bookId) {
+  selectedVocabBook = bookId;
+  renderVocabTab();
+}
+
+function renderAllWords() {
+  var all = [];
+  for (var id in appData.vocabularyBooks) {
+    var book = appData.vocabularyBooks[id];
+    for (var j = 0; j < book.words.length; j++) {
+      all.push({ word: book.words[j], bookId: id, bookName: book.name, bookIcon: book.icon });
+    }
+  }
+  allWordsCache = all;
+  renderFilteredVocab(all);
+}
+
+function renderVocabTableForBook(book) {
+  var arr = [];
+  for (var j = 0; j < book.words.length; j++) {
+    arr.push({ word: book.words[j], bookId: book.id, bookName: book.name, bookIcon: book.icon });
+  }
+  allWordsCache = arr;
+  renderFilteredVocab(arr);
+}
+
+var vocabPage = 1, vocabPageSize = 200, vocabFilteredTotal = 0;
+
+function renderFilteredVocab(items) {
+  var tbody = document.getElementById('vocab-tbody');
+  var pagDiv = document.getElementById('vocab-pagination');
+  var showBookCol = selectedVocabBook === null;
+  var levelColors = { 'N1': 'bg-ake/10 text-ake', 'N2': 'bg-kin/10 text-kin', 'N3': 'bg-midori/10 text-midori', 'N4': 'bg-sumi/10 text-sumi', 'N5': 'bg-hai/10 text-hai' };
+  var q = ((document.getElementById('vocab-search')||{}).value || '').toLowerCase();
+  
+  // 第一遍：统计匹配总数
+  var matched = [];
+  for (var i = 0; i < items.length; i++) {
+    var w = items[i].word, lv = w.level || '-';
+    if (q && (w.front+';'+w.back+';'+w.meaning+';'+items[i].bookName).toLowerCase().indexOf(q) < 0) continue;
+    if (vocabFilterLevel !== 'all' && lv.toUpperCase() !== vocabFilterLevel) continue;
+    matched.push(items[i]);
+  }
+  vocabFilteredTotal = matched.length;
+  
+  // 修正页码
+  var totalPages = Math.ceil(vocabFilteredTotal / vocabPageSize) || 1;
+  if (vocabPage > totalPages) vocabPage = totalPages;
+  
+  // 第二遍：只渲染当前页
+  var start = (vocabPage - 1) * vocabPageSize;
+  var pageItems = matched.slice(start, start + vocabPageSize);
+  
+  var rows = [];
+  for (var i = 0; i < pageItems.length; i++) {
+    var w = pageItems[i].word, bid = pageItems[i].bookId, bname = pageItems[i].bookName, lv = w.level || '-';
+    var lc = levelColors[lv] || 'bg-sumi/5 text-hai';
+    var statsHtml = '';
+    if (w.stats && w.stats.reviews > 0) {
+      statsHtml = '<span class="text-xs text-hai ml-1">' + Math.round((w.stats.correct||0)/Math.max(w.stats.reviews||1,1)*100) + '%/' + (w.stats.correct_streak||0) + '🔥</span>';
+    }
+    var bookCell = showBookCol ? '<td class="py-2.5 text-xs text-hai">'+bname+'</td>' : '';
+    rows.push('<tr class="border-b border-kin/5 hover:bg-sumi/[0.02]" data-level="'+lv+'">' +
+      '<td class="py-2.5 font-serif font-medium">' + w.front + statsHtml + '</td>' +
+      '<td class="py-2.5 text-hai text-sm">' + (w.back||'-') + '</td>' +
+      '<td class="py-2.5 text-sm">' + w.meaning + '</td>' +
+      '<td class="py-2.5"><span class="text-xs px-1.5 py-0.5 rounded-full ' + lc + '">' + lv + '</span></td>' +
+      bookCell +
+      '<td class="py-2.5 text-xs text-hai max-w-[140px] truncate">' + (w.example||'-') + '</td>' +
+      '<td class="py-2.5 text-xs">' + (w.note ? '📝' : '') + '</td>' +
+      '<td class="py-2.5"><button onclick="editWord(\''+bid+'\',\''+w.id+'\')" class="text-xs text-kin hover:text-sumi mr-1">编辑</button><button onclick="deleteWord(\''+bid+'\',\''+w.id+'\')" class="text-xs text-ake hover:text-red-700">删除</button></td>' +
+      '</tr>');
+  }
+  tbody.innerHTML = rows.join('');
+  
+  // 渲染分页控件
+  var pagHTML = '';
+  if (totalPages > 1) {
+    pagHTML = '<div class="flex items-center justify-center gap-1 text-xs mt-2">' +
+      '<button class="px-2 py-1 rounded border border-kin/20 hover:bg-sumi/5 disabled:opacity-30" onclick="goPage('+(vocabPage-1)+')" '+(vocabPage<=1?'disabled':'')+'>« 上一页</button>';
+    for (var p = 1; p <= totalPages; p++) {
+      if (p === 1 || p === totalPages || Math.abs(p - vocabPage) < 3) {
+        pagHTML += '<button class="w-7 h-7 rounded '+(p===vocabPage?'bg-sumi text-washi':'border border-kin/20 hover:bg-sumi/5')+'" onclick="goPage('+p+')">'+p+'</button>';
+      } else if (p === 2 && vocabPage > 4) {
+        pagHTML += '<span class="px-1 text-hai">…</span>';
+      } else if (p === totalPages-1 && vocabPage < totalPages-3) {
+        pagHTML += '<span class="px-1 text-hai">…</span>';
+      }
+    }
+    pagHTML += '<button class="px-2 py-1 rounded border border-kin/20 hover:bg-sumi/5 disabled:opacity-30" onclick="goPage('+(vocabPage+1)+')" '+(vocabPage>=totalPages?'disabled':'')+'>下一页 »</button>' +
+      '<span class="ml-3 text-hai">共 '+vocabFilteredTotal+' 词 · 第 '+vocabPage+'/'+totalPages+' 页</span></div>';
+  } else if (vocabFilteredTotal > 0) {
+    pagHTML = '<div class="text-center text-xs text-hai mt-2">共 '+vocabFilteredTotal+' 词</div>';
+  }
+  pagDiv.innerHTML = pagHTML;
+}
+
+function goPage(p) {
+  if (p < 1 || p > Math.ceil(vocabFilteredTotal/vocabPageSize)) return;
+  vocabPage = p;
+  renderFilteredVocab(allWordsCache);
+}
+
+function filterVocab() {
+  vocabPage = 1;
+  renderFilteredVocab(allWordsCache);
+}
+
+function filterVocabLevel(lv, btn) {
+  vocabFilterLevel = lv;
+  vocabPage = 1;
+  var btns = document.querySelectorAll('.level-filter');
+  for (var i = 0; i < btns.length; i++) btns[i].classList.remove('active');
+  btn.classList.add('active');
+  filterVocab();
+}
+
+function addVocabBook() {
+  const name = prompt('单词书名称（如：NHK词汇）');
+  if (!name) return;
+  const id = 'book-' + Date.now();
+  appData.vocabularyBooks[id] = { id, name: '📗 ' + name, icon: '📗', words: [] };
+  saveData();
+  renderVocabTab();
+}
+
+function addWord() {
+  if (!selectedVocabBook) { alert('请先选择一本单词书'); return; }
+  document.getElementById('modal-title').textContent = '添加单词';
+  document.getElementById('wf-front').value = '';
+  document.getElementById('wf-back').value = '';
+  document.getElementById('wf-meaning').value = '';
+  document.getElementById('wf-example').value = '';
+  document.getElementById('wf-tags').value = '';
+  document.getElementById('word-modal').classList.remove('hidden');
+  window._editingWordId = null;
+}
+
+function editWord(bookId, wordId) {
+  const word = appData.vocabularyBooks[bookId].words.find(w => w.id === wordId);
+  if (!word) return;
+  document.getElementById('modal-title').textContent = '编辑单词';
+  document.getElementById('wf-front').value = word.front;
+  document.getElementById('wf-back').value = word.back;
+  document.getElementById('wf-meaning').value = word.meaning;
+  document.getElementById('wf-example').value = word.example || '';
+  document.getElementById('wf-tags').value = (word.tags||[]).join(',');
+  document.getElementById('wf-level').value = word.level || '';
+  document.getElementById('wf-note').value = word.note || '';
+  document.getElementById('word-modal').classList.remove('hidden');
+  window._editingWordId = wordId;
+  window._editingBookId = bookId;
+}
+
+function saveWord() {
+  const bookId = window._editingBookId || selectedVocabBook;
+  if (!bookId) return;
+  
+  const front = document.getElementById('wf-front').value.trim();
+  const back = document.getElementById('wf-back').value.trim();
+  const meaning = document.getElementById('wf-meaning').value.trim();
+  if (!front || !meaning) { alert('日语和中文意思必填'); return; }
+  
+  const word = {
+    id: window._editingWordId || ('w' + Date.now()),
+    front: front, back: back, meaning: meaning,
+    example: document.getElementById('wf-example').value.trim(),
+    tags: document.getElementById('wf-tags').value.split(',').map(function(s){return s.trim()}).filter(Boolean),
+    level: document.getElementById('wf-level').value || '',
+    note: document.getElementById('wf-note').value.trim(),
+    stats: window._editingWordId ? (appData.vocabularyBooks[bookId].words.find(function(w){return w.id===window._editingWordId}) || {stats:{}}).stats : {}
+  };
+  
+  if (window._editingWordId) {
+    const idx = appData.vocabularyBooks[bookId].words.findIndex(w => w.id === window._editingWordId);
+    if (idx >= 0) appData.vocabularyBooks[bookId].words[idx] = word;
+  } else {
+    appData.vocabularyBooks[bookId].words.push(word);
+  }
+  
+  saveData();
+  closeModal();
+  renderVocabTable(appData.vocabularyBooks[bookId]);
+}
+
+function deleteWord(bookId, wordId) {
+  if (!confirm('确定删除这个单词吗？')) return;
+  appData.vocabularyBooks[bookId].words = appData.vocabularyBooks[bookId].words.filter(w => w.id !== wordId);
+  saveData();
+  renderVocabTable(appData.vocabularyBooks[bookId]);
+}
+
+function closeModal() {
+  document.getElementById('word-modal').classList.add('hidden');
+  window._editingWordId = null;
+  window._editingBookId = null;
+}
+
+// ═══════ GRAMMAR TAB ═══════
+function renderGrammarTab() {
+  const tbody = document.getElementById('grammar-tbody');
+  tbody.innerHTML = appData.grammarLibrary.map((g,i) => `
+    <tr class="border-b border-kin/5 hover:bg-sumi/[0.02]">
+      <td class="py-2.5 font-serif font-bold">${g.point}</td>
+      <td class="py-2.5 text-sm">${g.meaning}</td>
+      <td class="py-2.5"><span class="text-xs px-2 py-0.5 rounded-full ${g.level==='N1'?'bg-ake/10 text-ake':'bg-kin/10 text-kin'}">${g.level}</span></td>
+      <td class="py-2.5 text-xs text-hai max-w-[300px] truncate">${g.example}</td>
+      <td class="py-2.5">
+        <button onclick="editGrammar(${i})" class="text-xs text-kin hover:text-sumi mr-1">编辑</button>
+        <button onclick="deleteGrammar(${i})" class="text-xs text-ake hover:text-red-700">删除</button>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function addGrammarPoint() {
+  const point = prompt('语法点（如 〜ように）'); if (!point) return;
+  const meaning = prompt('含义（如 表示目的/状态变化）'); if (!meaning) return;
+  const level = prompt('级别（N1/N2/N3）', 'N2') || 'N2';
+  const example = prompt('例句') || '';
+  appData.grammarLibrary.push({
+    id: 'g' + Date.now(), point, meaning, level,
+    example, tags: []
+  });
+  saveData();
+  renderGrammarTab();
+}
+
+function editGrammar(idx) {
+  const g = appData.grammarLibrary[idx];
+  const point = prompt('语法点', g.point); if (!point) return;
+  const meaning = prompt('含义', g.meaning); if (!meaning) return;
+  const level = prompt('级别', g.level) || g.level;
+  const example = prompt('例句', g.example) || '';
+  appData.grammarLibrary[idx] = { ...g, point, meaning, level, example };
+  saveData();
+  renderGrammarTab();
+}
+
+function deleteGrammar(idx) {
+  if (!confirm('确定删除？')) return;
+  appData.grammarLibrary.splice(idx, 1);
+  saveData();
+  renderGrammarTab();
+}
+
+// ═══════ READING TAB ═══════
+var readingCat = 'all', readingSearch = '';
+
+function renderReadingTab() {
+  // 分类按钮事件
+  var catBtns = document.querySelectorAll('#reading-cats .reading-cat-btn');
+  for (var i = 0; i < catBtns.length; i++) {
+    catBtns[i].onclick = function() {
+      readingCat = this.dataset.cat;
+      for (var j = 0; j < catBtns.length; j++) {
+        catBtns[j].classList.remove('active', 'bg-sumi', 'text-washi');
+        catBtns[j].classList.add('border', 'border-kin/20');
+      }
+      this.classList.add('active', 'bg-sumi', 'text-washi');
+      this.classList.remove('border', 'border-kin/20');
+      renderReadingList();
+    };
+  }
+  renderReadingList();
+}
+
+function renderReadingList() {
+  var articles = appData.articles || [];
+  var q = (document.getElementById('reading-search') || {}).value || '';
+  q = q.toLowerCase();
+  
+  var filtered = articles.filter(function(a) {
+    if (readingCat !== 'all' && a.type !== readingCat) return false;
+    if (q && (a.title + a.category + a.content).toLowerCase().indexOf(q) < 0) return false;
+    return true;
+  });
+  
+  var catIcons = { 'email': '📧', 'article': '📰', 'dialogue': '🗣️' };
+  var listDiv = document.getElementById('reading-list');
+  
+  if (filtered.length === 0) {
+    listDiv.innerHTML = '<p class="text-xs text-hai p-3">没有匹配的文章</p>';
+    return;
+  }
+  
+  listDiv.innerHTML = filtered.map(function(a, idx) {
+    var icon = catIcons[a.type] || '📄';
+    return '<div class="reading-item p-3 rounded-lg border border-kin/10 hover:bg-sumi/5 cursor-pointer transition '+(idx===0?'bg-sumi/5':'')+'" onclick="viewArticle(\''+a.id+'\')" data-id="'+a.id+'">' +
+      '<div class="flex items-center gap-1.5"><span class="text-xs">'+icon+'</span><span class="text-xs text-hai">'+a.category+'</span></div>' +
+      '<p class="text-sm font-medium mt-1 leading-snug">'+a.title+'</p>' +
+      '<span class="text-xs px-1.5 py-0.5 rounded-full bg-sumi/5 text-hai mt-1 inline-block">'+a.level+'</span>' +
+      '</div>';
+  }).join('');
+}
+
+function viewArticle(id) {
+  var article = (appData.articles || []).find(function(a) { return a.id === id; });
+  if (!article) return;
+  
+  // 高亮选中项
+  var items = document.querySelectorAll('.reading-item');
+  for (var i = 0; i < items.length; i++) {
+    items[i].classList.remove('bg-sumi/5', 'border-sumi/20');
+    items[i].classList.add('border-kin/10');
+    if (items[i].dataset.id === id) {
+      items[i].classList.add('bg-sumi/5', 'border-sumi/20');
+    }
+  }
+  
+  document.getElementById('reading-placeholder').style.display = 'none';
+  document.getElementById('reading-viewer').style.display = 'block';
+  
+  var catNames = { 'email': '📧 商务邮件', 'article': '📰 行业文章', 'dialogue': '🗣️ 场景对话' };
+  document.getElementById('rv-title').textContent = article.title;
+  document.getElementById('rv-cat').textContent = catNames[article.type] || article.type;
+  document.getElementById('rv-level').textContent = article.level;
+  
+  // 正文：\\n → 换行
+  document.getElementById('rv-content').textContent = article.content;
+  
+  // 关键词汇
+  var vocabDiv = document.getElementById('rv-vocab');
+  if (article.vocab && article.vocab.length > 0) {
+    vocabDiv.innerHTML = article.vocab.map(function(v) {
+      return '<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-white border border-kin/20 text-xs"><b class="font-serif">'+v.f+'</b><span class="text-hai">'+v.b+'</span> · '+v.m+'</span>';
+    }).join('');
+  } else {
+    vocabDiv.innerHTML = '<span class="text-xs text-hai">暂无</span>';
+  }
+  
+  // 要点笔记
+  var noteBox = document.getElementById('rv-note-box');
+  if (article.note) {
+    noteBox.style.display = 'block';
+    document.getElementById('rv-note').textContent = article.note;
+  } else {
+    noteBox.style.display = 'none';
+  }
+  
+  // 存储当前文章，供朗读使用
+  window._currentArticle = article;
+}
+
+function speakArticleText() {
+  var article = window._currentArticle;
+  if (!article || !article.content) return;
+  var text = article.content.replace(/\n/g, '。');
+  speakWord(text);
+}
+
+// ═══════ 短文生成引擎 ═══════
+var _articleTemplates = [
+  '本日は[W1]についてお客様と打ち合わせを行いました。[W2]の[W3]に関して、具体的なご要望をいただきました。今後は[W4]を改善し、[W5]の向上に努めてまいります。',
+  '先日のメールで[W1]のご依頼をいただき、ありがとうございます。現在[W2]の[W3]を確認中です。来週までに[W4]の[W5]をお送りいたします。',
+  '[W1]についてご連絡いたします。[W2]の[W3]が予定より早く完了しました。つきましては[W4]の[W5]も前倒しで対応可能です。',
+  'お世話になっております。[W1]の件で[W2]を確認しましたところ、[W3]に一部[W4]がありました。早急に[W5]させていただきます。',
+  'この度は[W1]の[W2]について、貴重なご意見をいただきありがとうございます。[W3]を踏まえ、[W4]の[W5]を検討いたします。',
+  '平素よりお世話になっております。[W1]の新製品[W2]のご案内です。[W3]と[W4]を強化し、[W5]の向上を実現しました。',
+  '[W1]の納期についてご連絡します。[W2]の[W3]が遅れておりますが、[W4]までには[W5]できる見込みです。',
+  '展示会で[W1]にご興味をお持ちいただき、ありがとうございました。[W2]の[W3]サンプルを[W4]に[W5]いたします。',
+  '[W1]の品質についてお詫び申し上げます。[W2]工程の[W3]に不備がありました。[W4]を徹底し、[W5]の再発防止に努めます。',
+  'いつもお世話になっております。[W1]の[W2]について、[W3]の観点から[W4]をご提案させていただきます。[W5]までにご検討ください。',
+  '先方は[W1]の[W2]に大変ご満足いただいております。次回は[W3]についても[W4]をご提案し、[W5]の拡大を目指します。',
+  '[W1]のご注文を確かに承りました。[W2]から[W3]の生産を開始し、[W4]の[W5]に出荷予定です。'
+];
+
+function getRecentVocabulary() {
+  var log = appData.errorLog || [];
+  if (log.length === 0) {
+    var all = getAllWords();
+    var picked = [];
+    var n = Math.min(10, all.length);
+    for (var i = 0; i < n; i++) {
+      picked.push(all[Math.floor(Math.random() * all.length)]);
+    }
+    return picked;
+  }
+  var recent = log.slice(-50);
+  var wordMap = {};
+  for (var i = recent.length - 1; i >= 0; i--) {
+    if (!wordMap[recent[i].wordId]) {
+      wordMap[recent[i].wordId] = { front: recent[i].front, meaning: recent[i].meaning, wrong: !recent[i].correct };
+    }
+    if (!recent[i].correct) wordMap[recent[i].wordId].wrong = true;
+  }
+  var words = [];
+  for (var key in wordMap) { words.push(wordMap[key]); }
+  words.sort(function(a, b) { return (b.wrong ? 1 : 0) - (a.wrong ? 1 : 0); });
+  return words.slice(0, 10);
+}
+
+function generateArticleFromVocab() {
+  var words = getRecentVocabulary();
+  var tagDiv = document.getElementById('gen-recent-words');
+  if (words.length === 0) {
+    tagDiv.innerHTML = '<span class="text-hai">还没有答题记录，先做几道题吧！</span>';
+    return;
+  }
+  tagDiv.innerHTML = words.map(function(w) {
+    return '<span class="px-2 py-0.5 rounded-full bg-white border border-kin/20">'+w.front+' <span class="text-hai">('+w.meaning+')</span></span>';
+  }).join('');
+  
+  var tmpl = _articleTemplates[Math.floor(Math.random() * _articleTemplates.length)];
+  var picked = [];
+  var used = {};
+  var pool = words.slice();
+  while (picked.length < 5 && pool.length > 0) {
+    var idx = Math.floor(Math.random() * pool.length);
+    if (!used[pool[idx].front]) {
+      picked.push(pool[idx]);
+      used[pool[idx].front] = true;
+    }
+    pool.splice(idx, 1);
+  }
+  while (picked.length < 5) { picked.push(words[picked.length % words.length]); }
+  
+  var article = tmpl;
+  for (var i = 0; i < 5; i++) {
+    article = article.replace('[W'+(i+1)+']', '<b class="text-sumi">'+picked[i].front+'</b>（'+picked[i].meaning+'）');
+  }
+  
+  var resultDiv = document.getElementById('gen-result');
+  resultDiv.style.display = 'block';
+  document.getElementById('gen-content').innerHTML = article;
+  
+  window._generatedArticle = {
+    type: 'generated', category: 'AI生成',
+    title: '短文生成 ' + new Date().toLocaleDateString('ja-JP'),
+    content: article.replace(/<[^>]+>/g, ''),
+    vocab: picked.map(function(w) { return { f: w.front, b: '', m: w.meaning }; }),
+    note: '基于近期答题词汇自动生成', level: 'N3'
+  };
+}
+
+function saveGeneratedArticle() {
+  var art = window._generatedArticle;
+  if (!art) return;
+  art.id = 'gen-' + Date.now();
+  if (!appData.articles) appData.articles = [];
+  appData.articles.unshift(art);
+  saveData();
+  renderReadingList();
+  alert('✅ 已保存到文库！在「AI生成」分类中查看');
+}
+
+// ═══════ SETTINGS TAB ═══════
+function renderSettingsTab() {
+  const s = appData.settings;
+  document.getElementById('set-new-words').value = s.dailyNewWords;
+  document.getElementById('set-review-max').value = s.dailyReviewMax;
+  document.getElementById('set-time-limit').value = s.timeLimit;
+  
+  // 单词书开关
+  const toggles = document.getElementById('set-book-toggles');
+  toggles.innerHTML = Object.values(appData.vocabularyBooks).map(book => `
+    <label class="flex items-center gap-2 text-sm">
+      <input type="checkbox" value="${book.id}" ${s.selectedBooks.includes(book.id)?'checked':''}>
+      ${book.icon} ${book.name} (${book.words.length}词)
+    </label>
+  `).join('');
+  
+  // 做题模式
+  document.getElementById('set-mode-jp-cn').checked = s.quizModes.includes('jp-cn');
+  document.getElementById('set-mode-cn-jp').checked = s.quizModes.includes('cn-jp');
+  document.getElementById('set-mode-reading').checked = s.quizModes.includes('reading');
+  document.getElementById('set-mode-fill').checked = s.quizModes.includes('fill');
+  document.getElementById('set-mode-dictation').checked = s.quizModes.includes('dictation');
+  // 同步设置
+  if (s.gistToken) document.getElementById('set-gist-token').value = s.gistToken;
+  if (s.gistId) document.getElementById('set-gist-id').value = s.gistId;
+}
+
+function saveSettings() {
+  appData.settings.dailyNewWords = parseInt(document.getElementById('set-new-words').value) || 5;
+  appData.settings.dailyReviewMax = parseInt(document.getElementById('set-review-max').value) || 20;
+  appData.settings.timeLimit = parseInt(document.getElementById('set-time-limit').value) || 30;
+  
+  // 单词书选择
+  const checks = document.querySelectorAll('#set-book-toggles input[type=checkbox]');
+  appData.settings.selectedBooks = Array.from(checks).filter(c => c.checked).map(c => c.value);
+  
+  // 做题模式
+  appData.settings.quizModes = [];
+  if (document.getElementById('set-mode-jp-cn').checked) appData.settings.quizModes.push('jp-cn');
+  if (document.getElementById('set-mode-cn-jp').checked) appData.settings.quizModes.push('cn-jp');
+  if (document.getElementById('set-mode-reading').checked) appData.settings.quizModes.push('reading');
+  if (document.getElementById('set-mode-fill').checked) appData.settings.quizModes.push('fill');
+  if (document.getElementById('set-mode-dictation').checked) appData.settings.quizModes.push('dictation');
+  
+  // 同步设置
+  appData.settings.gistToken = document.getElementById('set-gist-token').value.trim();
+  appData.settings.gistId = document.getElementById('set-gist-id').value.trim();
+  
+  saveData();
+  alert('✅ 设置已保存');
+}
+
+// ═══════ GIST SYNC ═══════
+function syncStatus(msg, ok) {
+  var el = document.getElementById('sync-status');
+  el.textContent = msg;
+  el.style.color = ok ? '#4a7c59' : ok === false ? '#c24641' : '';
+}
+
+function autoUpload() {
+  var token = appData.settings && appData.settings.gistToken;
+  var gistId = appData.settings && appData.settings.gistId;
+  if (!token || !gistId) return; // 未配置则跳过
+  
+  // 更新本地时间戳
+  appData.lastSyncLocal = new Date().toISOString();
+  saveData();
+  
+  var content = JSON.stringify(appData, null, 2);
+  fetch('https://api.github.com/gists/' + gistId, {
+    method: 'PATCH',
+    headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ files: { 'bun2-data.json': { content: content } } })
+  }).then(function(r) {
+    if (r.ok) {
+      appData.lastSync = new Date().toISOString();
+      saveData();
+    }
+  }).catch(function() { /* 静默失败，不影响做题体验 */ });
+}
+
+function syncUpload() {
+  var token = document.getElementById('set-gist-token').value.trim();
+  var gistId = document.getElementById('set-gist-id').value.trim();
+  if (!token || !gistId) { syncStatus('请先填写 Token 和 Gist ID', false); return; }
+  
+  syncStatus('⬆️ 上传中…');
+  var content = JSON.stringify(appData, null, 2);
+  var url = 'https://api.github.com/gists/' + gistId;
+  
+  fetch(url, {
+    method: 'PATCH',
+    headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ files: { 'bun2-data.json': { content: content } } })
+  }).then(function(r) {
+    if (r.ok) {
+      syncStatus('✅ 上传成功！' + new Date().toLocaleTimeString(), true);
+      saveSettings(); // 顺便保存 token/id
+    } else {
+      r.json().then(function(d) { syncStatus('❌ 上传失败: ' + (d.message || r.status), false); });
+    }
+  }).catch(function(e) {
+    syncStatus('❌ 网络错误: ' + e.message, false);
+  });
+}
+
+function syncDownload() {
+  var token = document.getElementById('set-gist-token').value.trim();
+  var gistId = document.getElementById('set-gist-id').value.trim();
+  if (!token || !gistId) { syncStatus('请先填写 Token 和 Gist ID', false); return; }
+  
+  syncStatus('⬇️ 检查中…');
+  var url = 'https://api.github.com/gists/' + gistId;
+  
+  fetch(url, {
+    headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
+  }).then(function(r) {
+    if (!r.ok) {
+      r.json().then(function(d) { syncStatus('❌ 检查失败: ' + (d.message || r.status), false); });
+      return null;
+    }
+    return r.json();
+  }).then(function(data) {
+    if (!data) return;
+    if (!data.files || !data.files['bun2-data.json']) {
+      syncStatus('❌ Gist 中没有数据文件', false); return;
+    }
+    
+    // 时间比对
+    var cloudTime = data.updated_at ? new Date(data.updated_at) : null;
+    var localTime = appData.lastSync ? new Date(appData.lastSync) : null;
+    var localSaveTime = appData.lastSyncLocal ? new Date(appData.lastSyncLocal) : null;
+    
+    var cloudStr = cloudTime ? cloudTime.toLocaleString('zh-CN') : '未知';
+    var localStr = localSaveTime ? localSaveTime.toLocaleString('zh-CN') : (localTime ? localTime.toLocaleString('zh-CN') : '未知');
+    
+    var warnMsg = '云端数据将覆盖本机数据。\\n\\n☁️ 云端时间: ' + cloudStr + '\\n💻 本地时间: ' + localStr + '\\n\\n';
+    
+    if (localSaveTime && cloudTime && localSaveTime > cloudTime) {
+      warnMsg += '⚠️ 警告：本地数据比云端新！可能云端未同步最新进度。\\n确定要用旧数据覆盖吗？';
+    } else {
+      warnMsg += '确定下载吗？建议先导出本地数据做备份。';
+    }
+    
+    if (!confirm(warnMsg)) { syncStatus('已取消', false); return; }
+    
+    syncStatus('⬇️ 下载中…');
+    try {
+      var remote = JSON.parse(data.files['bun2-data.json'].content);
+      appData = remote;
+      appData.lastSync = new Date().toISOString();
+      saveData();
+      syncStatus('✅ 下载成功！', true);
+      saveSettings();
+      location.reload();
+    } catch(e) {
+      syncStatus('❌ 数据解析失败: ' + e.message, false);
+    }
+  }).catch(function(e) {
+    syncStatus('❌ 网络错误: ' + e.message, false);
+  });
+}
+
+// ═══════ DATA IMPORT/EXPORT ═══════
+function exportAllData() {
+  const blob = new Blob([JSON.stringify(appData, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `bun2-japanese-backup-${new Date().toISOString().split('T')[0]}.json`;
+  a.click();
+}
+
+function importAllData() {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        appData = JSON.parse(reader.result);
+        saveData();
+        alert('✅ 数据导入成功！刷新页面查看。');
+        location.reload();
+      } catch(e) { alert('❌ 文件格式错误'); }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function importCSV(type) {
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.csv';
+  input.onchange = e => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => {
+      const lines = reader.result.split('\n').filter(l=>l.trim());
+      if (type === 'vocab' && selectedVocabBook) {
+        for (const line of lines.slice(1)) {
+          const [front,back,meaning,example,tags] = line.split(',').map(s=>s.trim());
+          if (front && meaning) {
+            appData.vocabularyBooks[selectedVocabBook].words.push({
+              id:'w'+Date.now()+Math.random(), front, back, meaning, example, tags:tags?tags.split(';'):[], stats:{}
+            });
+          }
+        }
+        saveData();
+        renderVocabTable(appData.vocabularyBooks[selectedVocabBook]);
+        alert('✅ CSV导入完成');
+      } else if (type === 'grammar') {
+        for (const line of lines.slice(1)) {
+          const [point,meaning,level,example] = line.split(',').map(s=>s.trim());
+          if (point && meaning) {
+            appData.grammarLibrary.push({id:'g'+Date.now()+Math.random(), point, meaning, level, example, tags:[]});
+          }
+        }
+        saveData();
+        renderGrammarTab();
+        alert('✅ CSV导入完成');
+      }
+    };
+    reader.readAsText(file);
+  };
+  input.click();
+}
+
+function exportCSV(type) {
+  let csv = '';
+  if (type === 'vocab' && selectedVocabBook) {
+    csv = '日语,读音,中文,例句,标签\n';
+    csv += appData.vocabularyBooks[selectedVocabBook].words.map(w => 
+      `${w.front},${w.back},${w.meaning},${w.example||''},${(w.tags||[]).join(';')}`
+    ).join('\n');
+  } else if (type === 'grammar') {
+    csv = '语法点,含义,级别,例句\n';
+    csv += appData.grammarLibrary.map(g => `${g.point},${g.meaning},${g.level},${g.example}`).join('\n');
+  }
+  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = `${type}-export-${new Date().toISOString().split('T')[0]}.csv`;
+  a.click();
+}
+
+function resetAllData() {
+  if (!confirm('⚠ 确定要重置全部数据吗？此操作不可撤销！\n建议先导出备份。')) return;
+  if (!confirm('再次确认：删除所有单词书、语法库、学习记录？')) return;
+  localStorage.removeItem(STORAGE_KEY);
+  location.reload();
+}
+
+// ═══════ HEADER & CHART ═══════
+function updateHeader() {
+  document.getElementById('hdr-day-num').textContent = appData.streak || 1;
+  document.getElementById('hdr-streak').textContent = appData.streak || 0;
+}
+
+function renderChart() {
+  const ctx = document.getElementById('progressChart');
+  if (!ctx) return;
+  // 清除旧图表
+  const existing = Chart.getChart(ctx);
+  if (existing) existing.destroy();
+  
+  const logs = appData.learningLog || [];
+  const last7 = logs.slice(-7);
+  
+  new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: last7.map(l => l.date.slice(5)) || ['今日'],
+      datasets: [
+        { label: '正确', data: last7.map(l=>l.correct)||[quizCorrect], backgroundColor:'#4a7c59', borderRadius:4, barPercentage:.6 },
+        { label: '错误', data: last7.map(l=>l.wrong)||[quizWrong], backgroundColor:'#c24641', borderRadius:4, barPercentage:.6 }
+      ]
+    },
+    options: {
+      responsive:true, maintainAspectRatio:false,
+      plugins:{ legend:{ position:'bottom', labels:{ usePointStyle:true, padding:12, font:{size:10,family:'"Noto Sans JP"'}} } },
+      scales:{ y:{ beginAtZero:true, stacked:true, ticks:{stepSize:5,font:{size:10}}, grid:{color:'#e0d8cc'} }, x:{ stacked:true, grid:{display:false}, ticks:{font:{size:10}} } }
+    }
+  });
+  
+  // 记录今天的数据到学习日志
+  if (quizCorrect + quizWrong > 0) {
+    const today = new Date().toISOString().split('T')[0];
+    const existingLog = appData.learningLog.find(l => l.date === today);
+    if (existingLog) {
+      existingLog.correct = quizCorrect;
+      existingLog.wrong = quizWrong;
+    } else {
+      appData.learningLog.push({ date: today, correct: quizCorrect, wrong: quizWrong });
+    }
+    saveData();
+  }
+}
+
+// ═══════ UTILS: TTS, 快捷键, 撒花, 暗色模式 ═══════
+function speakWord(text) {
+  try {
+    if (!window.speechSynthesis) return;
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = 'ja-JP'; u.rate = 0.85; u.pitch = 1;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(u);
+  } catch(e) {}
+}
+
+// 键盘快捷键
+document.addEventListener('keydown', function(e) {
+  var t = document.getElementById('tab-learn');
+  if (!t || !t.classList.contains('active')) return;
+  var btns = document.querySelectorAll('#q-options .quiz-option');
+  if (btns.length === 0) return;
+  var keys = ['1','2','3','4'];
+  var idx = keys.indexOf(e.key);
+  if (idx >= 0 && !btns[idx].disabled) { answerQuestion(idx); return; }
+  if (e.key === ' ' || e.key === 'Enter') {
+    e.preventDefault();
+    var nb = document.getElementById('q-next-btn');
+    if (nb && nb.style.display !== 'none') nextQuestion();
+  }
+});
+
+// 撒花庆祝
+function celebrate() {
+  var colors = ['#c9a96e','#c24641','#4a7c59','#1a1a2e','#f5f0e8'];
+  for (var i = 0; i < 40; i++) {
+    var p = document.createElement('div');
+    p.style.cssText = 'position:fixed;z-index:999;width:8px;height:8px;border-radius:50%;background:'+colors[i%5]+
+      ';left:'+Math.random()*100+'%;top:-20px;animation:fall'+i%3+' '+(2+Math.random()*3)+'s ease-in forwards;pointer-events:none';
+    p.textContent = ['🌸','🎉','⭐','💮','✨'][i%5];
+    p.style.fontSize = (12+Math.random()*16)+'px';
+    document.body.appendChild(p);
+    setTimeout(function(){ p.remove(); }, 4000);
+  }
+}
+
+// 暗色模式
+var darkMode = localStorage.getItem('bun2-dark') === '1';
+function toggleDark() {
+  darkMode = !darkMode;
+  localStorage.setItem('bun2-dark', darkMode ? '1' : '0');
+  applyDark();
+}
+function applyDark() {
+  var style = document.getElementById('dark-style');
+  if (darkMode) {
+    if (!style) {
+      style = document.createElement('style'); style.id = 'dark-style';
+      style.textContent = 'body{background:#1a1a2e!important;color:#e0d8cc!important}.bg-white{background:#252540!important;color:#e0d8cc!important}.bg-sumi\\/3{background:rgba(201,169,110,0.1)!important}.border-kin\\/10{border-color:rgba(201,169,110,0.15)!important}.border-kin\\/20{border-color:rgba(201,169,110,0.25)!important}.task-card:hover{background:#2a2a48!important}.text-sumi{color:#e0d8cc!important}.text-hai{color:#a09890!important}#quiz-placeholder p{color:#e0d8cc!important}input,textarea{background:#2a2a48!important;color:#e0d8cc!important;border-color:rgba(201,169,110,0.3)!important}';
+      document.head.appendChild(style);
+    }
+  } else {
+    if (style) style.remove();
+  }
+}
+applyDark();
+
+// ═══════ INIT ═══════
+repairData();
+updateHeader();
+renderChart();
+renderQuickBooks();
+
+// 关闭页面前自动同步
+window.addEventListener('beforeunload', function() { autoUpload(); });
+
+// 注册 Service Worker（PWA 离线缓存）
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('sw.js').catch(function(){});
+}
+</script>
+</body>
+</html>

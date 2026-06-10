@@ -1,0 +1,15 @@
+{
+  "name": "不二日本語 — B2B商务日语",
+  "short_name": "不二日本語",
+  "description": "B2B商务日语学习 · 间隔重复 · 闪卡 · 商务邮件",
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f5f0e8",
+  "theme_color": "#1a1a2e",
+  "icons": [{
+    "src": "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%231a1a2e'/><text y='.75em' font-size='60' text-anchor='middle' x='50'>📖</text></svg>",
+    "sizes": "100x100",
+    "type": "image/svg+xml"
+  }]
+}
