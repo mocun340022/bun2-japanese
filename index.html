@@ -378,15 +378,14 @@ body{font-family:'Noto Sans JP',sans-serif;background:#f5f0e8;color:#1a1a2e;min-
     </div>
     
     <div class="bg-white rounded-xl border border-kin/10 p-5">
-      <h3 class="text-sm font-bold mb-3">☁️ 多设备同步（GitHub Gist）</h3>
-      <p class="text-xs text-hai mb-3">使用 GitHub Gist 做免费云存储，手机电脑数据同步。<br>需要创建 <a href="https://github.com/settings/tokens" target="_blank" class="text-kin underline">GitHub Token</a>（勾选 gist 权限）和 <a href="https://gist.github.com" target="_blank" class="text-kin underline">Gist</a>。</p>
+      <h3 class="text-sm font-bold mb-3">☁️ 多设备同步</h3>
+      <p class="text-xs text-hai mb-3">数据存 GitHub 仓库，手机下载无需 Token。<br>上传需要 <a href="https://github.com/settings/tokens" target="_blank" class="text-kin underline">GitHub Token</a>（勾选 <b>repo</b> 权限）。</p>
       <div class="space-y-2 mb-3">
-        <input id="set-gist-token" class="w-full px-3 py-2 rounded-lg border border-kin/20 text-sm font-mono" placeholder="GitHub Token（ghp_xxxx）" type="password">
-        <input id="set-gist-id" class="w-full px-3 py-2 rounded-lg border border-kin/20 text-sm font-mono" placeholder="Gist ID（URL末尾的哈希值）">
+        <input id="set-sync-token" class="w-full px-3 py-2 rounded-lg border border-kin/20 text-sm font-mono" placeholder="GitHub Token（上传用，下载无需填写）" type="password">
       </div>
       <div class="flex gap-2 mb-2">
         <button onclick="syncUpload()" class="flex-1 py-2 rounded-lg bg-midori/10 text-midori text-sm font-medium hover:bg-midori/20 transition">⬆️ 上传到云端</button>
-        <button onclick="syncDownload()" class="flex-1 py-2 rounded-lg bg-kin/10 text-sumi text-sm font-medium hover:bg-kin/20 transition">⬇️ 从云端下载</button>
+        <button onclick="syncDownload()" class="flex-1 py-2 rounded-lg bg-kin/10 text-sumi text-sm font-medium hover:bg-kin/20 transition">⬇️ 从云端下载（无需Token）</button>
       </div>
       <p id="sync-status" class="text-xs text-hai min-h-[1.2em]"></p>
     </div>
@@ -608,8 +607,7 @@ function defaultData() {
       timeLimit: 30,
       selectedBooks: ['business-docs', 'industry-terms'],
       quizModes: ['jp-cn', 'cn-jp', 'reading'],
-      gistToken: '',
-      gistId: ''
+      syncToken: ''
     },
     vocabularyBooks: {
       'business-docs': {
@@ -1817,8 +1815,7 @@ function renderSettingsTab() {
   document.getElementById('set-mode-fill').checked = s.quizModes.includes('fill');
   document.getElementById('set-mode-dictation').checked = s.quizModes.includes('dictation');
   // 同步设置
-  if (s.gistToken) document.getElementById('set-gist-token').value = s.gistToken;
-  if (s.gistId) document.getElementById('set-gist-id').value = s.gistId;
+  if (s.syncToken) document.getElementById('set-sync-token').value = s.syncToken;
 }
 
 function saveSettings() {
@@ -1839,59 +1836,78 @@ function saveSettings() {
   if (document.getElementById('set-mode-dictation').checked) appData.settings.quizModes.push('dictation');
   
   // 同步设置
-  appData.settings.gistToken = document.getElementById('set-gist-token').value.trim();
-  appData.settings.gistId = document.getElementById('set-gist-id').value.trim();
+  appData.settings.syncToken = document.getElementById('set-sync-token').value.trim();
   
   saveData();
   alert('✅ 设置已保存');
 }
 
-// ═══════ GIST SYNC ═══════
+// ═══════ REPO SYNC ═══════
+// 存储到 GitHub 仓库 sync.json，下载无需认证
+var SYNC_REPO = 'mocun340022/bun2-japanese';
+var SYNC_FILE = 'sync.json';
+var SYNC_API = 'https://api.github.com/repos/' + SYNC_REPO + '/contents/' + SYNC_FILE;
+var SYNC_RAW = 'https://raw.githubusercontent.com/' + SYNC_REPO + '/main/' + SYNC_FILE;
+
 function syncStatus(msg, ok) {
   var el = document.getElementById('sync-status');
   el.textContent = msg;
   el.style.color = ok ? '#4a7c59' : ok === false ? '#c24641' : '';
 }
 
+function getSyncToken() {
+  var el = document.getElementById('set-sync-token');
+  return el ? el.value.trim() : (appData.settings && appData.settings.syncToken) || '';
+}
+
 function autoUpload() {
-  var token = appData.settings && appData.settings.gistToken;
-  var gistId = appData.settings && appData.settings.gistId;
-  if (!token || !gistId) return; // 未配置则跳过
+  var token = getSyncToken();
+  if (!token) return;
   
-  // 更新本地时间戳
   appData.lastSyncLocal = new Date().toISOString();
   saveData();
   
   var content = JSON.stringify(appData, null, 2);
-  fetch('https://api.github.com/gists/' + gistId, {
-    method: 'PATCH',
+  fetch(SYNC_API, {
+    method: 'PUT',
     headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ files: { 'bun2-data.json': { content: content } } })
+    body: JSON.stringify({ message: 'sync', content: btoa(unescape(encodeURIComponent(content))), branch: 'main' })
   }).then(function(r) {
     if (r.ok) {
       appData.lastSync = new Date().toISOString();
       saveData();
     }
-  }).catch(function() { /* 静默失败，不影响做题体验 */ });
+  }).catch(function() {});
 }
 
 function syncUpload() {
-  var token = document.getElementById('set-gist-token').value.trim();
-  var gistId = document.getElementById('set-gist-id').value.trim();
-  if (!token || !gistId) { syncStatus('请先填写 Token 和 Gist ID', false); return; }
+  var token = getSyncToken();
+  if (!token) { syncStatus('请先填写 GitHub Token', false); return; }
   
   syncStatus('⬆️ 上传中…');
   var content = JSON.stringify(appData, null, 2);
-  var url = 'https://api.github.com/gists/' + gistId;
   
-  fetch(url, {
-    method: 'PATCH',
-    headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ files: { 'bun2-data.json': { content: content } } })
+  // 先获取当前 SHA（如果文件已存在）
+  fetch(SYNC_API + '?ref=main', {
+    headers: { 'Authorization': 'token ' + token }
+  }).then(function(r) {
+    var sha = null;
+    if (r.ok) return r.json().then(function(d) { sha = d.sha; return sha; });
+    return null;
+  }).then(function(sha) {
+    var body = { message: 'sync: ' + new Date().toLocaleString(), content: btoa(unescape(encodeURIComponent(content))), branch: 'main' };
+    if (sha) body.sha = sha;
+    
+    return fetch(SYNC_API, {
+      method: 'PUT',
+      headers: { 'Authorization': 'token ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
   }).then(function(r) {
     if (r.ok) {
+      appData.settings.syncToken = token;
+      saveSettings();
       syncStatus('✅ 上传成功！' + new Date().toLocaleTimeString(), true);
-      saveSettings(); // 顺便保存 token/id
     } else {
       r.json().then(function(d) { syncStatus('❌ 上传失败: ' + (d.message || r.status), false); });
     }
@@ -1901,59 +1917,24 @@ function syncUpload() {
 }
 
 function syncDownload() {
-  var token = document.getElementById('set-gist-token').value.trim();
-  var gistId = document.getElementById('set-gist-id').value.trim();
-  if (!token || !gistId) { syncStatus('请先填写 Token 和 Gist ID', false); return; }
+  syncStatus('⬇️ 下载中…');
   
-  syncStatus('⬇️ 检查中…');
-  var url = 'https://api.github.com/gists/' + gistId;
-  
-  fetch(url, {
-    headers: { 'Authorization': 'token ' + token, 'Accept': 'application/vnd.github.v3+json' }
-  }).then(function(r) {
-    if (!r.ok) {
-      r.json().then(function(d) { syncStatus('❌ 检查失败: ' + (d.message || r.status), false); });
-      return null;
-    }
-    return r.json();
-  }).then(function(data) {
-    if (!data) return;
-    if (!data.files || !data.files['bun2-data.json']) {
-      syncStatus('❌ Gist 中没有数据文件', false); return;
-    }
-    
-    // 时间比对
-    var cloudTime = data.updated_at ? new Date(data.updated_at) : null;
-    var localTime = appData.lastSync ? new Date(appData.lastSync) : null;
-    var localSaveTime = appData.lastSyncLocal ? new Date(appData.lastSyncLocal) : null;
-    
-    var cloudStr = cloudTime ? cloudTime.toLocaleString('zh-CN') : '未知';
-    var localStr = localSaveTime ? localSaveTime.toLocaleString('zh-CN') : (localTime ? localTime.toLocaleString('zh-CN') : '未知');
-    
-    var warnMsg = '云端数据将覆盖本机数据。\\n\\n☁️ 云端时间: ' + cloudStr + '\\n💻 本地时间: ' + localStr + '\\n\\n';
-    
-    if (localSaveTime && cloudTime && localSaveTime > cloudTime) {
-      warnMsg += '⚠️ 警告：本地数据比云端新！可能云端未同步最新进度。\\n确定要用旧数据覆盖吗？';
-    } else {
-      warnMsg += '确定下载吗？建议先导出本地数据做备份。';
-    }
-    
-    if (!confirm(warnMsg)) { syncStatus('已取消', false); return; }
-    
-    syncStatus('⬇️ 下载中…');
-    try {
-      var remote = JSON.parse(data.files['bun2-data.json'].content);
-      appData = remote;
-      appData.lastSync = new Date().toISOString();
-      saveData();
-      syncStatus('✅ 下载成功！', true);
-      saveSettings();
-      location.reload();
-    } catch(e) {
-      syncStatus('❌ 数据解析失败: ' + e.message, false);
-    }
-  }).catch(function(e) {
-    syncStatus('❌ 网络错误: ' + e.message, false);
+  fetch(SYNC_RAW + '?t=' + Date.now())
+  .then(function(r) {
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.text();
+  })
+  .then(function(text) {
+    var remote = JSON.parse(text);
+    if (!confirm('云端数据将覆盖本机数据，确定下载？')) { syncStatus('已取消', false); return; }
+    appData = remote;
+    appData.lastSync = new Date().toISOString();
+    saveData();
+    syncStatus('✅ 下载成功！', true);
+    location.reload();
+  })
+  .catch(function(e) {
+    syncStatus('❌ 下载失败: ' + e.message + '（请先在电脑端上传一次）', false);
   });
 }
 
