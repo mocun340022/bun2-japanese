@@ -13,9 +13,8 @@
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📖</text></svg>">
 <script src="https://cdn.tailwindcss.com"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Noto+Serif+JP:wght@400;600;700&display=swap" rel="stylesheet">
 <script>
-tailwind.config={theme:{extend:{fontFamily:{serif:['"Noto Serif JP"','serif'],sans:['"Noto Sans JP"','sans-serif']},colors:{sumi:'#1a1a2e',kin:'#c9a96e',washi:'#f5f0e8',ake:'#c24641',midori:'#4a7c59',hai:'#8b8682'}}}}
+tailwind.config={theme:{extend:{fontFamily:{serif:['"Hiragino Mincho ProN"','"Yu Mincho"','"MS Mincho"','"Noto Serif CJK SC"','serif'],sans:['"Hiragino Kaku Gothic ProN"','"Yu Gothic"','"Microsoft YaHei"','"PingFang SC"','sans-serif']},colors:{sumi:'#1a1a2e',kin:'#c9a96e',washi:'#f5f0e8',ake:'#c24641',midori:'#4a7c59',hai:'#8b8682'}}}}
 </script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -41,6 +40,62 @@ body{font-family:'Noto Sans JP',sans-serif;background:#f5f0e8;color:#1a1a2e;min-
 ::-webkit-scrollbar{width:5px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:#c9a96e;border-radius:3px}
+
+/* ═══════ 手机端适配（仅 ≤768px，不影响桌面）═══════ */
+@media (max-width: 768px) {
+  /* 导航栏：紧凑横排 */
+  .tab-btn{font-size:11px!important;padding:8px 6px!important;white-space:nowrap}
+  /* 全局留白缩小 */
+  main{max-width:100%!important;padding:8px!important}
+  header{flex-wrap:wrap;gap:4px}
+  header .flex.items-center.gap-5{gap:8px!important;font-size:11px!important}
+  header h1{font-size:15px!important}
+  /* 学习页：列堆叠 */
+  .grid.grid-cols-12{display:flex!important;flex-direction:column!important;gap:10px!important}
+  .grid.grid-cols-12>[class*=col-]{width:100%!important}
+  /* 卡片圆角缩小 */
+  .rounded-2xl,.rounded-xl{border-radius:10px!important}
+  /* 按钮加大触控区 */
+  button.quiz-option,.quiz-option{padding:14px!important;font-size:14px!important;min-height:48px}
+  #q-question{font-size:28px!important;margin:20px 0!important}
+  /* 学习页：做题区撑满 */
+  #quiz-area{min-height:300px!important}
+  #quiz-placeholder,.quiz-placeholder{padding:20px!important}
+  /* 词库页：表格横向滚动 */
+  #tab-vocab .flex.gap-5{flex-direction:column!important;height:auto!important}
+  #tab-vocab .w-56{width:100%!important}
+  #vocab-book-list{display:flex!important;flex-wrap:wrap!important;gap:4px!important}
+  #vocab-book-list>div{flex:0 0 auto!important;font-size:11px!important;padding:4px 8px!important}
+  #vocab-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}
+  #vocab-table thead,#vocab-table tbody{display:table;width:100%;min-width:600px}
+  #vocab-table th,#vocab-table td{font-size:12px!important;padding:6px 4px!important;white-space:nowrap}
+  /* 表格列宽手机优化 */
+  #vocab-table th:nth-child(4),#vocab-table td:nth-child(4){display:none} /* 隐藏等级列 */
+  #vocab-table th:nth-child(5),#vocab-table td:nth-child(5){display:none} /* 隐藏所属书列 */
+  /* 操作按钮 */
+  #tab-vocab .flex.gap-2,.flex.gap-2{flex-wrap:wrap;gap:4px!important}
+  /* 语法库 */
+  #tab-grammar>div{height:auto!important}
+  #tab-grammar table{display:block;overflow-x:auto}
+  #tab-grammar thead,#tab-grammar tbody{display:table;width:100%;min-width:500px}
+  /* 设置页 */
+  #tab-settings .max-w-lg{max-width:100%!important}
+  /* 阅读页 */
+  #tab-reading .grid.grid-cols-12{flex-direction:column!important}
+  #reading-list{max-height:200px!important}
+  #reading-cats button{font-size:10px!important;padding:4px 8px!important}
+  /* 模态弹窗 */
+  .modal-overlay>div{max-width:95%!important;margin:8px!important;padding:14px!important}
+  /* 学习记录面板 */
+  #records-body .grid.grid-cols-2{display:flex!important;flex-direction:column!important;gap:12px!important}
+  /* 弱点面板 */
+  #weakness-body .grid.grid-cols-2{display:flex!important;flex-direction:column!important;gap:12px!important}
+  /* 头部标题栏防断行 */
+  #hdr-day{white-space:nowrap}
+  #hdr-streak{white-space:nowrap}
+  /* 统计卡片 */
+  .grid.grid-cols-2.gap-2 .rounded-xl{padding:8px 4px!important}
+}
 </style>
 </head>
 <body class="font-sans">
